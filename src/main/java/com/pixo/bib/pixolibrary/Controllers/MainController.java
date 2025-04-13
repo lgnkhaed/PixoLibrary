@@ -72,6 +72,7 @@ public class MainController {
         currentIndex = (currentIndex + 1) % imagesList.size(); // boucle
         showCurrentImage();
     }
+    // upload picture
     @FXML
     private void uploadPicture() {
         FileChooser fileChooser = new FileChooser();
@@ -116,7 +117,7 @@ public class MainController {
             }
         }
     }
-
+    // go to transformation
     @FXML
     private void transformationPanel() {
         try {
