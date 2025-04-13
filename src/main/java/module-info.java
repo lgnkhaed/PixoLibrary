@@ -10,7 +10,12 @@ module com.pixo.bib.pixolibrary {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
 
-    opens com.pixo.bib.pixolibrary to javafx.fxml;
+    // Open the package for reflection so FXML can access controllers
+    opens com.pixo.bib.pixolibrary.Controllers to javafx.fxml;
+
+    // Export the main package and controllers
     exports com.pixo.bib.pixolibrary;
+    exports com.pixo.bib.pixolibrary.Controllers;
 }
