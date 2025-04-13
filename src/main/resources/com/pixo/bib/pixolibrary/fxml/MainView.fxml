@@ -4,11 +4,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane prefHeight="483.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.MainController">
+<Pane fx:id="mainPane" prefHeight="500.0" prefWidth="800.0" stylesheets="@../CSS/mainStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.MainController">
     <children>
-        <ImageView fx:id="myImageView" fitHeight="425.0" fitWidth="373.0" layoutX="22.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
-        <Button fx:id="changeImageButton" layoutX="426.0" layoutY="388.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Other Image" />
-        <Button fx:id="myUploadButton" layoutX="426.0" layoutY="419.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Click To Upload" />
-        <Button fx:id="myTransformButton" layoutX="426.0" layoutY="356.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Transform" />
+        <ImageView fx:id="myImageView" fitHeight="450.0" fitWidth="373.0" layoutX="22.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
+        <Button fx:id="changeImageButton" layoutX="604.0" layoutY="389.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Other Image" />
+        <Button fx:id="myUploadButton" layoutX="604.0" layoutY="422.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Click To Upload" />
+        <Button fx:id="myTransformButton" layoutX="603.0" layoutY="356.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Transform" />
     </children>
 </Pane>
