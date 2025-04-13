@@ -1,13 +1,19 @@
 package com.pixo.bib.pixolibrary.Controllers;
 
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainController {
@@ -22,8 +28,14 @@ public class MainController {
     private final ArrayList<String> imagesList = new ArrayList<>();
     private int currentIndex=0;
 
+    //to switch to scenes
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
     //the first setup of the Mainview
-    @FXML private void initialize() {
+    @FXML
+    public void initialize() {
         // Upload the pictures
         imagesList.add("res:/com/pixo/bib/pixolibrary/Images/picture1.jpg");
         imagesList.add("res:/com/pixo/bib/pixolibrary/Images/picture2.jpg");
@@ -32,12 +44,7 @@ public class MainController {
         //dislay the first image in the start
         showCurrentImage();
 
-        changeImageButton.setOnAction(e -> showNextImage());
-        myUploadButton.setOnAction(e->uploadPicture());
     }
-
-
-
     //to upload the image
     private void showCurrentImage() {
         try {
@@ -59,14 +66,12 @@ public class MainController {
             System.out.println("Error while accesing the image : " + e.getMessage());
         }
     }
-
     // show the next image
     @FXML
     private void showNextImage() {
         currentIndex = (currentIndex + 1) % imagesList.size(); // boucle
         showCurrentImage();
     }
-
     @FXML
     private void uploadPicture() {
         FileChooser fileChooser = new FileChooser();
@@ -112,7 +117,22 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void transformationPanel() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/TransformView.fxml"));
+            Parent root = loader.load();
 
+            TransformController transformController = loader.getController();
+            transformController.setImage(myImageView.getImage());
+
+            Stage stage = (Stage) myImageView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // Logs more detailed info
+        }
+    }
 
 
 }

@@ -6,9 +6,9 @@
 
 <Pane prefHeight="483.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.MainController">
     <children>
+        <Button fx:id="myUploadButton" layoutX="426.0" layoutY="419.0" mnemonicParsing="false" onAction="#uploadPicture" prefHeight="25.0" prefWidth="176.0" text="Click To Upload" />
         <ImageView fx:id="myImageView" fitHeight="425.0" fitWidth="373.0" layoutX="22.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
-        <Button fx:id="changeImageButton" layoutX="426.0" layoutY="388.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Other Image" />
-        <Button fx:id="myUploadButton" layoutX="426.0" layoutY="419.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Click To Upload" />
-        <Button fx:id="myTransformButton" layoutX="426.0" layoutY="356.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="176.0" text="Transform" />
+        <Button fx:id="changeImageButton" layoutX="426.0" layoutY="388.0" mnemonicParsing="false" onAction="#showNextImage" prefHeight="25.0" prefWidth="176.0" text="Other Image" />
+        <Button fx:id="myTransformButton" layoutX="426.0" layoutY="356.0" mnemonicParsing="false" onAction="#transformationPanel" prefHeight="25.0" prefWidth="176.0" text="Transform" />
     </children>
 </Pane>
