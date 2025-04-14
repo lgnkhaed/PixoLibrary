@@ -1,8 +1,7 @@
-package com.pixo.bib.pixolibrary.metaData;
+package com.pixo.bib.pixolibrary.Model.metaData;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pixo.bib.pixolibrary.metaData.MetaData;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MetaDataManager {
-    private static final String METADATA_FILE = "metadata.json";
+    private static final String METADATA_FILE = "data/metadata.json";
     private List<MetaData> metadataList = new ArrayList<>();
     private final Gson gson = new Gson();
 
@@ -53,13 +52,7 @@ public class MetaDataManager {
         });
     }
 
-    // Récupère les images associées à un tag
-    public List<String> getImagesByTag(String tag) {
-        return metadataList.stream()
-                .filter(m -> m.getTags().contains(tag))
-                .map(MetaData::getImagePath)
-                .collect(Collectors.toList());
-    }
+
 
     // Récupère les tags d'une image
     public List<String> getTagsForImage(String imagePath) {
@@ -83,4 +76,40 @@ public class MetaDataManager {
                 .filter(m -> m.getImagePath().equals(imagePath))
                 .findFirst();
     }
+
+    public void addTransformation(String imagePath, String transformation) {
+        MetaData metadata = getOrCreateMetadata(imagePath);
+        if (!metadata.getTransformations().contains(transformation)) {
+            metadata.getTransformations().add(transformation);
+            saveMetadata();
+        }
+    }
+
+    public List<String> getTransformationsForImage(String imagePath) {
+        return getMetadataForImage(imagePath)
+                .map(MetaData::getTransformations)
+                .orElse(new ArrayList<>());
+    }
+
+    public boolean hasTransformation(String imagePath, String transformation) {
+        return getMetadataForImage(imagePath)
+                .map(m -> m.getTransformations().contains(transformation))
+                .orElse(false);
+    }
+    public List<String> getImagesByTag(String tag) {
+        loadMetadata();
+        return metadataList.stream()
+                .filter(m -> m.getTags().contains(tag))
+                .map(MetaData::getImagePath)
+                .collect(Collectors.toList());
+    }
+    public List<String> getAllUniqueTags() {
+        loadMetadata();
+        return metadataList.stream()
+                .flatMap(m -> m.getTags().stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
 }

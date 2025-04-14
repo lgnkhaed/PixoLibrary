@@ -1,11 +1,12 @@
 package com.pixo.bib.pixolibrary.Controllers;
 
-
 import com.pixo.bib.pixolibrary.Model.Filters.*;
+import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -13,113 +14,92 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class TransformController {
-     // attributes to manipulate the transformations
-     private Image originalImage;
-     private boolean grayscaleApplied = false;
-     private boolean rgbSwapApplied = false;
-     private boolean sepiaApplied = false;
-        private boolean sobelApplied = false;
-
-
+    private Image originalImage;
+    private String currentImagePath;
+    private final MetaDataManager metadataManager = new MetaDataManager();
+    private String currentActiveFilter;
     @FXML private ImageView myImageView;
 
-    //to use it in the MainController pour afficher l'image choisie
-    @FXML
+    // Initialisation
     public void setImage(Image image) {
+        this.originalImage = image; // Sauvegarde l'original
         myImageView.setImage(image);
-        originalImage = image;
+        currentActiveFilter = null; // Réinitialise le filtre actif
     }
 
-    //btn to go back home
+    public void setImagePath(String path) {
+        this.currentImagePath = path;
+    }
+
+    // Navigation
     @FXML
-    private void goBackMainView() throws IOException {
+    private void goBackMainView() {
         try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/MainView.fxml"));
-                Parent root = loader.load();
-                //to execute initialize()
-                MainController mainController = loader.getController();
-                mainController.initialize();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/MainView.fxml"));
+            Parent root = loader.load();
 
-                //
-                Stage stage = (Stage) myImageView.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
+            MainController mainController = loader.getController();
+            mainController.initialize(); // Recharge les images et métadonnées
+
+            Stage stage = (Stage) myImageView.getScene().getWindow();
+            stage.setScene(new Scene(root));
         } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-
-    // transformation Functions
-    @FXML
-    private void onMirrorClicked() {
-        if (myImageView.getImage() != null) {
-            ImageFilter filter = new flipHorizontalFilter();
-            Image result = filter.apply(myImageView.getImage());
-            myImageView.setImage(result);
+            showAlert("Erreur", "Impossible de retourner à l'accueil");
         }
     }
 
+    // Transformations
+    @FXML
+    private void onMirrorClicked() {
+        applyFilter(new FlipHorizontalFilter(), "Mirror");
+    }
 
     @FXML
     private void onGrayscaleClicked() {
-        if (myImageView.getImage() == null) return;
-
-        if (!grayscaleApplied) {
-            ImageFilter filter = new GrayscaleFilter();
-            Image result = filter.apply(myImageView.getImage());
-            myImageView.setImage(result);
-            grayscaleApplied = true;
-        } else {
-            myImageView.setImage(originalImage);
-            grayscaleApplied = false;
-        }
+        applyFilter(new GrayscaleFilter(), "Grayscale");
     }
-
 
     @FXML
     private void onRGBSwapClicked() {
-        if (myImageView.getImage() == null) return;
-
-        if (!rgbSwapApplied) {
-            ImageFilter filter = new RGBSwapFilter();
-            Image result = filter.apply(myImageView.getImage());
-            myImageView.setImage(result);
-            rgbSwapApplied = true;
-        } else {
-            myImageView.setImage(originalImage);
-            rgbSwapApplied = false;
-        }
+        applyFilter(new RGBSwapFilter(), "RGBSwap");
     }
 
     @FXML
     private void onSepiaClicked() {
-        if (myImageView.getImage() == null) return;
-
-        if (!sepiaApplied) {
-            ImageFilter filter = new SepiaFilter();
-            Image result = filter.apply(myImageView.getImage());
-            myImageView.setImage(result);
-            sepiaApplied = true;
-        } else {
-            myImageView.setImage(originalImage);
-            sepiaApplied = false;
-        }
+        applyFilter(new SepiaFilter(), "Sepia");
     }
 
     @FXML
     private void onSobelClicked() {
-        if (myImageView.getImage() == null) return;
-
-        if (!sobelApplied) {
-            ImageFilter filter = new SobelFilter();
-            Image result = filter.apply(myImageView.getImage());
-            myImageView.setImage(result);
-            sobelApplied = true;
-        } else {
-            myImageView.setImage(originalImage);
-            sobelApplied = false;
-        }
+        applyFilter(new SobelFilter(), "Sobel");
     }
 
+    private void applyFilter(ImageFilter filter, String filterName) {
+        if (myImageView.getImage() == null || originalImage == null) return;
+
+        metadataManager.loadMetadata();
+        boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
+
+        // Si le filtre est déjà appliqué (dans metadata.json), on le désactive
+        if (isAlreadyApplied) {
+            myImageView.setImage(originalImage);
+            metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
+        }
+        // Sinon, on l'applique
+        else {
+            Image result = filter.apply(originalImage);
+            myImageView.setImage(result);
+            metadataManager.addTransformation(currentImagePath, filterName);
+        }
+
+        metadataManager.saveMetadata();
+    }
+
+    // Utilitaires
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

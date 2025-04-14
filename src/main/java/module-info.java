@@ -2,7 +2,6 @@ module com.pixo.bib.pixolibrary {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
-
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -12,11 +11,12 @@ module com.pixo.bib.pixolibrary {
     requires com.almasb.fxgl.all;
     requires java.desktop;
     requires com.google.gson;
+    opens com.pixo.bib.pixolibrary.Controllers to javafx.fxml;
+    exports com.pixo.bib.pixolibrary.Controllers;
 
     // Open the package for reflection so FXML can access controllers
-    opens com.pixo.bib.pixolibrary.Controllers to javafx.fxml;
 
     // Export the main package and controllers
     exports com.pixo.bib.pixolibrary;
-    exports com.pixo.bib.pixolibrary.Controllers;
+    opens com.pixo.bib.pixolibrary.Model.metaData to com.google.gson;
 }
