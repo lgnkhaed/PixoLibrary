@@ -1,6 +1,5 @@
 package com.pixo.bib.pixolibrary.Controllers;
 
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,70 +9,59 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 public class MainController {
 
     @FXML private ImageView myImageView;
-    @FXML private Button    changeImageButton;
-    @FXML private Button myTransformButton;
-    @FXML private Button myUploadButton;
-
 
     //the list of the Images to display and
     private final ArrayList<String> imagesList = new ArrayList<>();
     private int currentIndex=0;
+    private int numberOfImages=2;
 
-    //to switch to scenes
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+    // getter and setter for Number of images
+    public int getNumberOfImages(){
+        return numberOfImages;
+    }
+    public void setNumberOfImages(int numberOfImages){this.numberOfImages=numberOfImages;}
 
-    //the first setup of the Mainview
+    //the first setup of the MainView
     @FXML
     public void initialize() {
-        // Upload the pictures
-        imagesList.add("res:/com/pixo/bib/pixolibrary/Images/picture1.jpg");
-        imagesList.add("res:/com/pixo/bib/pixolibrary/Images/picture2.jpg");
-        //imagesList.add("/resources/com/pixo/bib/pixolibrary/Images/picture2.jpg");
+        imagesList.clear(); // make sure it's clean
 
-        //dislay the first image in the start
-        showCurrentImage();
+        // Path to Uploads
+        File uploadsPic = new File("uploads");
 
-    }
-    //to upload the image
-    private void showCurrentImage() {
-        try {
-            String path = imagesList.get(currentIndex);
-            Image image;
+        if (uploadsPic.exists()) {
+            File[] files = uploadsPic.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().matches("picture\\d+\\..+")) {
 
-            if (path.startsWith("res:")) {
-                //load from resources
-                String resourcePath = path.substring(4); // remove "res:"
-                image = new Image(getClass().getResourceAsStream(resourcePath));
-            } else {
-                //load from file
-                File file = new File(path);
-                image = new Image(file.toURI().toString());
+                        String uploadsPath = "uploads/" + file.getName();
+                        imagesList.add(uploadsPath);
+                    }
+                }
+                //set The NumberOfPictures
+                setNumberOfImages(imagesList.size());
+                //System.out.println("Loaded " + getNumberOfImages() + " images from uploads.");
             }
+        } else {
+            System.out.println("Resources image directory doesn't exist.");
+        }
 
-            myImageView.setImage(image);
-        } catch (Exception e) {
-            System.out.println("Error while accesing the image : " + e.getMessage());
+        //display the firstImage
+        if (!imagesList.isEmpty()) {
+            showCurrentImage();
         }
     }
-    // show the next image
-    @FXML
-    private void showNextImage() {
-        currentIndex = (currentIndex + 1) % imagesList.size(); // boucle
-        showCurrentImage();
-    }
-    // upload picture
+
+    // upload picture {it uploads the picture into /uploads so it will be easy to use in the initialise method}
     @FXML
     private void uploadPicture() {
         FileChooser fileChooser = new FileChooser();
@@ -86,38 +74,78 @@ public class MainController {
 
         if (selectedFile != null) {
             try {
-                //gettin the uploads repo
-                File uploadDir = new File("uploads");
-                //checking
-                if (!uploadDir.exists()) {
-                    System.out.println("⚠️uploads doesn't exist  !");
-                    return;
+                // Create or use "uploads" directory relative to the working directory
+                File uploadsDir = new File("uploads");
+                if (!uploadsDir.exists()) {
+                    System.out.println("UploadsDirectory doesn't exist.");
+                    uploadsDir.mkdirs();
                 }
 
-                //saving
-                File destination = new File(uploadDir, selectedFile.getName());
+                // numberOfPictures
+                int count = (int) java.util.Arrays.stream(Objects.requireNonNull(uploadsDir.listFiles()))
+                        .filter(file -> file.getName().matches("picture\\d+\\..+"))
+                        .count();
+                setNumberOfImages(count + 1);
 
+                //file extension
+                String extension = selectedFile.getName().substring(
+                        selectedFile.getName().lastIndexOf(".")
+                        );
+
+                //create destination file name: picture{number}.{ext}
+                File destination = new File(uploadsDir, "picture" + getNumberOfImages() + extension);
+
+                //copy the file
                 java.nio.file.Files.copy(
                         selectedFile.toPath(),
                         destination.toPath(),
                         java.nio.file.StandardCopyOption.REPLACE_EXISTING
                 );
 
-                //display the image
+                //display the pic
                 Image image = new Image(destination.toURI().toString());
                 myImageView.setImage(image);
 
-                //add uploaded image to the liste
-                imagesList.add(destination.getAbsolutePath());
-
-                //i don't know but it's working like this
+                //add image's path to imageList
+                imagesList.add("uploads/" + destination.getName());
                 currentIndex = imagesList.size() - 1;
 
+                //System.out.println("Image uploaded to: " + destination.getAbsolutePath());
+
             } catch (Exception e) {
-                System.out.println("Error while uploading : " + e.getMessage());
+                System.out.println("Error while uploading: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
+
+    // To display The image with the index currentIndex
+    private void showCurrentImage() {
+        try {
+            String path = imagesList.get(currentIndex);
+            //System.out.println("Current image path: " + path+"\n");
+
+            File imageFile = new File(path);
+            if (!imageFile.exists()) {
+                //System.out.println("Image file does not exist: " + path);
+                return;
+            }
+
+            Image image = new Image(imageFile.toURI().toString());
+            myImageView.setImage(image);
+
+        } catch (Exception e) {
+            System.out.println("Error while accesing the image : " + e.getMessage());
+        }
+    }
+
+    // show the next image
+    @FXML
+    private void showNextImage() {
+        currentIndex = (currentIndex + 1) % imagesList.size(); // boucle
+        showCurrentImage();
+    }
+
     // go to transformation
     @FXML
     private void transformationPanel() {
@@ -132,7 +160,7 @@ public class MainController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // Logs more detailed info
+            e.printStackTrace();
         }
     }
 
