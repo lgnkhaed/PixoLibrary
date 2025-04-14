@@ -11,6 +11,7 @@ module com.pixo.bib.pixolibrary {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires com.google.gson;
 
     // Open the package for reflection so FXML can access controllers
     opens com.pixo.bib.pixolibrary.Controllers to javafx.fxml;

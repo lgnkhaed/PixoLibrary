@@ -16,10 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 public class MainController {
 
     @FXML private ImageView myImageView;
-    @FXML private Button changeImageButton;
+    @FXML private Button    changeImageButton;
     @FXML private Button myTransformButton;
     @FXML private Button myUploadButton;
 

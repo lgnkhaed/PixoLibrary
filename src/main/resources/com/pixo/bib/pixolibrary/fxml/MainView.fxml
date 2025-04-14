@@ -10,5 +10,6 @@
         <Button fx:id="changeImageButton" layoutX="604.0" layoutY="389.0" mnemonicParsing="false" onAction="#showNextImage" prefHeight="25.0" prefWidth="176.0" text="Other Image" />
         <Button fx:id="myUploadButton" layoutX="604.0" layoutY="422.0" mnemonicParsing="false" onAction="#uploadPicture" prefHeight="25.0" prefWidth="176.0" text="Click To Upload" />
         <Button fx:id="myTransformButton" layoutX="603.0" layoutY="356.0" mnemonicParsing="false" onAction="#transformationPanel" prefHeight="25.0" prefWidth="176.0" text="Transform" />
+
     </children>
 </Pane>
