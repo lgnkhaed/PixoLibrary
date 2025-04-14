@@ -1,0 +1,42 @@
+/* mainStyle.css */
+
+/* Style général du Pane */
+#mainPane {
+    -fx-background-color: linear-gradient(to bottom right, #1e1e2f, #2d2d3f);
+    -fx-padding: 20;
+}
+
+/* ImageView stylé */
+#myImageView {
+    -fx-effect: dropshadow(gaussian, #000000, 10, 0.5, 0, 0);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #3a3a50;
+    -fx-border-width: 2;
+}
+
+/* Style de base des boutons */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #3c3f58, #2a2d3e);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #5a5a7a;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.5, 0, 1);
+}
+
+/* Boutons au survol */
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a4d68, #36394f);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* Boutons enfoncés */
+.button:pressed {
+    -fx-background-color: #1f1f2f;
+    -fx-text-fill: #bbbbff;
+}

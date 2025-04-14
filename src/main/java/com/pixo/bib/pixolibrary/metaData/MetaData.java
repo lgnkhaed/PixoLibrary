@@ -8,6 +8,11 @@ public class MetaData {
     private List<String> tags = new ArrayList<>();
     private List<String> transformations = new ArrayList<>();
 
+    public MetaData(String imagePath) {
+    }
+
+
+
     // Getters et Setters
     public String getImagePath() { return imagePath; }
     public void setImagePath(String path) { this.imagePath = path; }

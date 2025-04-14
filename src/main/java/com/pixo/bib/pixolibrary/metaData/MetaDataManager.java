@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MetadataManager {
+public class MetaDataManager {
     private static final String METADATA_FILE = "metadata.json";
     private List<MetaData> metadataList = new ArrayList<>();
     private final Gson gson = new Gson();
@@ -57,28 +57,28 @@ public class MetadataManager {
     public List<String> getImagesByTag(String tag) {
         return metadataList.stream()
                 .filter(m -> m.getTags().contains(tag))
-                .map(Metadata::getImagePath)
+                .map(MetaData::getImagePath)
                 .collect(Collectors.toList());
     }
 
     // Récupère les tags d'une image
     public List<String> getTagsForImage(String imagePath) {
         return getMetadataForImage(imagePath)
-                .map(Metadata::getTags)
+                .map(MetaData::getTags)
                 .orElse(new ArrayList<>());
     }
 
     // Méthodes utilitaires
-    private Metadata getOrCreateMetadata(String imagePath) {
+    private MetaData getOrCreateMetadata(String imagePath) {
         return getMetadataForImage(imagePath)
                 .orElseGet(() -> {
-                    Metadata newMetadata = new Metadata(imagePath);
+                    MetaData newMetadata = new MetaData(imagePath);
                     metadataList.add(newMetadata);
                     return newMetadata;
                 });
     }
 
-    private java.util.Optional<Metadata> getMetadataForImage(String imagePath) {
+    private java.util.Optional<MetaData> getMetadataForImage(String imagePath) {
         return metadataList.stream()
                 .filter(m -> m.getImagePath().equals(imagePath))
                 .findFirst();
