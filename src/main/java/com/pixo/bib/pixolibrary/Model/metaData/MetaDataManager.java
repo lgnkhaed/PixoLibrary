@@ -1,9 +1,7 @@
 package com.pixo.bib.pixolibrary.Model.metaData;
 import com.google.gson.Gson;
-import com.google.gson.Gson.*;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -52,7 +50,6 @@ public class MetaDataManager {
             saveMetadata();
         });
     }
-
 
 
     //return List of tags of the image specified with {imagePath}
@@ -111,7 +108,6 @@ public class MetaDataManager {
                 .map(MetaData::getImagePath)
                 .collect(Collectors.toList());
     }
-
 
     public List<String> getAllUniqueTags() {
         loadMetadata();

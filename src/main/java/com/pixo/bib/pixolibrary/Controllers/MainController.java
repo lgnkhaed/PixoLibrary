@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +29,7 @@ public class MainController{
     private int currentIndex = 0;
     private final MetaDataManager metadataManager = new MetaDataManager();
 
+    // intialize method for Mainview{ upload Images from uploads , upload metada From json file
     @FXML
     public void initialize() {
         metadataManager.loadMetadata();
@@ -41,8 +41,7 @@ public class MainController{
         }
     }
 
-    // Méthodes de base ---------------------------------------------------------------
-
+    //upload pictures from Uploads directory
     private void loadImagesFromUploads() {
         imagesList.clear();
         File uploadsDir = new File("uploads");
@@ -59,25 +58,26 @@ public class MainController{
         }
     }
 
-    private void showCurrentImage() {
-        if (imagesList.isEmpty()) return;
-
-        try {
-            String path = imagesList.get(currentIndex);
-            Image image = new Image(new File(path).toURI().toString());
-            myImageView.setImage(image);
-            updateTagsList();
-        } catch (Exception e) {
-            showAlert("Erreur", "Impossible de charger l'image");
-        }
-    }
-
+    // methods to Display the Image
     @FXML
     private void handleNextImage() {
         if (imagesList.isEmpty()) return;
         currentIndex = (currentIndex + 1) % imagesList.size();
         showCurrentImage();
     }
+    private void showCurrentImage() {
+        if (imagesList.isEmpty()) return;
+        try {
+            String path = imagesList.get(currentIndex);
+            Image image = new Image(new File(path).toURI().toString());
+            myImageView.setImage(image);
+            updateTagsList();
+        } catch (Exception e) {
+            showAlert("Error", "cannot load image from ");
+        }
+    }
+
+
 
     @FXML
     private void uploadPicture() {
@@ -101,13 +101,14 @@ public class MainController{
                 currentIndex = imagesList.size() - 1;
                 showCurrentImage();
             } catch (IOException e) {
-                showAlert("Erreur", "Échec de l'upload");
+                showAlert("Error", "Couldn't upload picture");
             }
         }
     }
 
-    // Gestion des tags ----------------------------------------------------------------
+    //handling tags
 
+    // add tag to Image
     @FXML
     private void handleAddTag() {
         if (imagesList.isEmpty()) return;
@@ -120,6 +121,7 @@ public class MainController{
         }
     }
 
+    // remove Tag to image
     @FXML
     private void handleRemoveTag() {
         if (imagesList.isEmpty()) return;
@@ -131,6 +133,7 @@ public class MainController{
         }
     }
 
+    // update Tags {display tags // nedded when add or remove Tags}
     private void updateTagsList() {
         if (!imagesList.isEmpty()) {
             List<String> tags = metadataManager.getTagsForImage(imagesList.get(currentIndex));
@@ -138,8 +141,9 @@ public class MainController{
         }
     }
 
-    // Recherche par tags --------------------------------------------------------------
+    //Searching Tags
 
+    // search with tag
     @FXML
     private void handleSearchByTag() {
         String tag = searchTagField.getText().trim();
@@ -149,24 +153,25 @@ public class MainController{
             if (!matchingImages.isEmpty()) {
                 showSearchResults(matchingImages);
             } else {
-                showAlert("Aucun résultat", "Aucune image trouvée avec le tag: " + tag);
+                showAlert("No result", "No Image found with the Tag: " + tag);
             }
         }
     }
 
+    // display the results
     private void showSearchResults(List<String> imagePaths) {
         // Version simplifiée sans dépendances externes
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Résultats de recherche");
-        alert.setHeaderText("Images trouvées (" + imagePaths.size() + "):");
+        alert.setTitle("Searching Results");
+        alert.setHeaderText("Images found (" + imagePaths.size() + "):");
 
         String content = String.join("\n", imagePaths);
         alert.setContentText(content);
         alert.showAndWait();
     }
 
-    // Navigation ----------------------------------------------------------------------
 
+    // go to transformation panel
     @FXML
     private void openTransformationPanel() {
         try {
@@ -180,12 +185,11 @@ public class MainController{
             Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
-            showAlert("Erreur", "Échec de l'ouverture des transformations");
+            showAlert("Eroor", "Can't open transform panel");
         }
     }
 
-    // Utilitaires ---------------------------------------------------------------------
-
+    // method to display error message  on alert window
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
