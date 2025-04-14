@@ -1,5 +1,4 @@
 package com.pixo.bib.pixolibrary.Controllers;
-
 import com.pixo.bib.pixolibrary.Model.Filters.*;
 import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
 import javafx.fxml.FXML;
@@ -20,13 +19,14 @@ public class TransformController {
     private String currentActiveFilter;
     @FXML private ImageView myImageView;
 
-    // Initialisation
+    // Initialisation , used in MainController
     public void setImage(Image image) {
-        this.originalImage = image; // Sauvegarde l'original
+        this.originalImage = image; // save the origin image when opening , to be able to reset after applying filters
         myImageView.setImage(image);
-        currentActiveFilter = null; // Réinitialise le filtre actif
+        currentActiveFilter = null; //take off the current Active filters
     }
 
+    // used in MainController , to set the apth of the originalImage while opening
     public void setImagePath(String path) {
         this.currentImagePath = path;
     }
@@ -39,53 +39,52 @@ public class TransformController {
             Parent root = loader.load();
 
             MainController mainController = loader.getController();
-            mainController.initialize(); // Recharge les images et métadonnées
+            mainController.initialize(); //to reUpload Images and Metdatas
 
             Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible de retourner à l'accueil");
+            showAlert("Error", "Can't go back to the MainView");
         }
     }
 
-    // Transformations
+    //Filters classes Created and use applyFilter method
     @FXML
     private void onMirrorClicked() {
         applyFilter(new FlipHorizontalFilter(), "Mirror");
     }
-
     @FXML
     private void onGrayscaleClicked() {
         applyFilter(new GrayscaleFilter(), "Grayscale");
     }
-
     @FXML
     private void onRGBSwapClicked() {
         applyFilter(new RGBSwapFilter(), "RGBSwap");
     }
-
     @FXML
     private void onSepiaClicked() {
         applyFilter(new SepiaFilter(), "Sepia");
     }
-
     @FXML
     private void onSobelClicked() {
         applyFilter(new SobelFilter(), "Sobel");
     }
 
+    // method used in the FilterButton{to ensure No duplication in the Filters before applying}
     private void applyFilter(ImageFilter filter, String filterName) {
+        // verify if the image is set
         if (myImageView.getImage() == null || originalImage == null) return;
 
+        // verify if the filter has been applied before {avoids having the same tags many times} {use the hasTransformation method in metaDataManager}
         metadataManager.loadMetadata();
         boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
 
-        // Si le filtre est déjà appliqué (dans metadata.json), on le désactive
+        // If the Filter is already applied , we take off the filer
         if (isAlreadyApplied) {
             myImageView.setImage(originalImage);
             metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
         }
-        // Sinon, on l'applique
+        // else we apply it
         else {
             Image result = filter.apply(originalImage);
             myImageView.setImage(result);
@@ -95,7 +94,7 @@ public class TransformController {
         metadataManager.saveMetadata();
     }
 
-    // Utilitaires
+    // method to display error message  on alert window
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

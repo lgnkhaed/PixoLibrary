@@ -78,7 +78,6 @@ public class MainController{
     }
 
 
-
     @FXML
     private void uploadPicture() {
         FileChooser fileChooser = new FileChooser();
@@ -169,7 +168,6 @@ public class MainController{
         alert.setContentText(content);
         alert.showAndWait();
     }
-
 
     // go to transformation panel
     @FXML
