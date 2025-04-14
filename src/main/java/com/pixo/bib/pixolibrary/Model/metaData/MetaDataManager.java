@@ -1,6 +1,7 @@
 package com.pixo.bib.pixolibrary.Model.metaData;
-
 import com.google.gson.Gson;
+import com.google.gson.Gson.*;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
@@ -12,30 +13,30 @@ import java.util.stream.Collectors;
 public class MetaDataManager {
     private static final String METADATA_FILE = "data/metadata.json";
     private List<MetaData> metadataList = new ArrayList<>();
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();;
 
-    // Charge les métadonnées depuis le fichier JSON
+    //charge metaData from Json file
     public void loadMetadata() {
         try (Reader reader = new FileReader(METADATA_FILE)) {
             Type type = new TypeToken<List<MetaData>>(){}.getType();
             metadataList = gson.fromJson(reader, type);
             if (metadataList == null) metadataList = new ArrayList<>();
         } catch (IOException e) {
-            System.err.println("Aucun fichier de métadonnées trouvé, création d'une nouvelle liste.");
+            System.err.println("No metaData file found , Creating new List ! ");
             metadataList = new ArrayList<>();
         }
     }
 
-    // Sauvegarde les métadonnées dans le fichier JSON
+    //sava MetaData to jsonFile
     public void saveMetadata() {
         try (Writer writer = new FileWriter(METADATA_FILE)) {
             gson.toJson(metadataList, writer);
         } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde des métadonnées : " + e.getMessage());
+            System.err.println("Error while savin to MetaData : " + e.getMessage());
         }
     }
 
-    // Ajoute un tag à une image
+    //add Tag to Image
     public void addTag(String imagePath, String tag) {
         MetaData metadata = getOrCreateMetadata(imagePath);
         if (!metadata.getTags().contains(tag)) {
@@ -44,7 +45,7 @@ public class MetaDataManager {
         }
     }
 
-    // Supprime un tag d'une image
+    //remove tag from Metadata of the image specified with the Path {imagePath}
     public void removeTag(String imagePath, String tag) {
         getMetadataForImage(imagePath).ifPresent(metadata -> {
             metadata.getTags().remove(tag);
@@ -54,14 +55,14 @@ public class MetaDataManager {
 
 
 
-    // Récupère les tags d'une image
+    //return List of tags of the image specified with {imagePath}
     public List<String> getTagsForImage(String imagePath) {
         return getMetadataForImage(imagePath)
                 .map(MetaData::getTags)
                 .orElse(new ArrayList<>());
     }
 
-    // Méthodes utilitaires
+    //look for Metadata of the image with {ImagePath} , if the image is Found so the metaData is  found we return the metadata else we create a newMetaData with the imagePath specofoed
     private MetaData getOrCreateMetadata(String imagePath) {
         return getMetadataForImage(imagePath)
                 .orElseGet(() -> {
@@ -71,12 +72,15 @@ public class MetaDataManager {
                 });
     }
 
+    // search in metadataList about the metadata for the picture with {imagePath} and return it
     private java.util.Optional<MetaData> getMetadataForImage(String imagePath) {
         return metadataList.stream()
                 .filter(m -> m.getImagePath().equals(imagePath))
                 .findFirst();
     }
 
+
+    // add transformation to the Image {used when we add transformation}
     public void addTransformation(String imagePath, String transformation) {
         MetaData metadata = getOrCreateMetadata(imagePath);
         if (!metadata.getTransformations().contains(transformation)) {
@@ -85,17 +89,21 @@ public class MetaDataManager {
         }
     }
 
+    // return the Transformation applied to an Image
     public List<String> getTransformationsForImage(String imagePath) {
         return getMetadataForImage(imagePath)
                 .map(MetaData::getTransformations)
                 .orElse(new ArrayList<>());
     }
 
+    // return True if the image wih {imagePath} has {transformation} as tage else return false
     public boolean hasTransformation(String imagePath, String transformation) {
         return getMetadataForImage(imagePath)
                 .map(m -> m.getTransformations().contains(transformation))
                 .orElse(false);
     }
+
+    // return the paths of images that has the {tag} in the MetaData
     public List<String> getImagesByTag(String tag) {
         loadMetadata();
         return metadataList.stream()
@@ -103,6 +111,8 @@ public class MetaDataManager {
                 .map(MetaData::getImagePath)
                 .collect(Collectors.toList());
     }
+
+
     public List<String> getAllUniqueTags() {
         loadMetadata();
         return metadataList.stream()

@@ -1,16 +1,34 @@
 [
   {
-    "imagePath":"uploads/picture1.jpg",
-    "tags":["lion","nature","savana"],
-    "transformations":[]
+    "imagePath": "uploads/picture1.jpg",
+    "tags": [
+      "lion",
+      "nature",
+      "savana",
+      "sauvage"
+    ],
+    "transformations": []
   },
   {
-    "imagePath":"uploads/picture3.JPG",
-    "tags":["capture","hand writing","paper","mba3bes"],
-    "transformations":["Mirror"]
+    "imagePath": "uploads/picture3.JPG",
+    "tags": [
+      "capture",
+      "hand writing",
+      "paper",
+      "mba3bes"
+    ],
+    "transformations": [
+      "Mirror"
+    ]
   },
-  {"imagePath":"uploads/picture2.jpg",
-    "tags":["panda","nature"],
-    "transformations":["RGBSwap"]
+  {
+    "imagePath": "uploads/picture2.jpg",
+    "tags": [
+      "panda",
+      "nature"
+    ],
+    "transformations": [
+      "RGBSwap"
+    ]
   }
 ]
