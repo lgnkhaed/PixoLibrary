@@ -73,12 +73,23 @@ public class TransformController {
         applyFilter(new SobelFilter(), "Sobel");
     }
 
+    @FXML
+    private void rotateRight(){
+        applyFilter(new RotateRightFilter(), "RotateRight");
+    }
+
+    @FXML
+    private void rotateLeft(){
+        applyFilter(new RotateLeftFilter(), "RotateLeft");
+    }
+
     // method used in the FilterButton{to ensure No duplication in the Filters before applying}
     private void applyFilter(ImageFilter filter, String filterName) {
         // verify if the image is set
         if (myImageView.getImage() == null || originalImage == null) return;
 
-        // verify if the filter has been applied before {avoids having the same tags many times} {use the hasTransformation method in metaDataManager}
+        // verify if the filter has been applied before {avoids having the same tags many times}
+        // {use the hasTransformation method in metaDataManager}
         metadataManager.loadMetadata();
         boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
 
@@ -94,9 +105,19 @@ public class TransformController {
             myImageView.setImage(result);
             metadataManager.addTransformation(currentImagePath, filterName);
         }*/
-        Image result = filter.apply(originalImage);
-        myImageView.setImage(result);
-        if (!isAlreadyApplied) {metadataManager.addTransformation(currentImagePath, filterName);}
+        if(filterName.equals("RotateRight") || filterName.equals("RotateLeft")){
+            Image result = filter.apply(myImageView.getImage());
+            myImageView.setImage(result);
+            if (!isAlreadyApplied) {
+                metadataManager.addTransformation(currentImagePath, filterName);
+            }
+        }else {
+            Image result = filter.apply(originalImage);
+            myImageView.setImage(result);
+            if (!isAlreadyApplied) {
+                metadataManager.addTransformation(currentImagePath, filterName);
+            }
+        }
     }
 
 

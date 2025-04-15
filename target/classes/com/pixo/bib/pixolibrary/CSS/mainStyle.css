@@ -1,0 +1,90 @@
+/* mainStyle.css */
+
+/* Style général du Pane principal */
+#mainPane {
+    -fx-background-color: linear-gradient(to bottom right, #1e1e2f, #2d2d3f);
+    -fx-padding: 20;
+}
+
+/* Style de l'ImageView */
+#myImageView {
+    -fx-effect: dropshadow(gaussian, #000000, 10, 0.5, 0, 0);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #3a3a50;
+    -fx-border-width: 2;
+}
+
+/* Style de base pour tous les boutons */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #3c3f58, #2a2d3e);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #5a5a7a;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.5, 0, 1);
+    -fx-font-size: 12px;
+}
+
+/* États des boutons */
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a4d68, #36394f);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-background-color: #1f1f2f;
+    -fx-text-fill: #bbbbff;
+}
+
+/* Champ de recherche */
+#searchTagField {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #666666;
+    -fx-font-size: 14px;
+}
+
+/* Liste des tags */
+#tagsListView {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+
+/* Items de la liste des tags */
+.list-cell {
+    -fx-padding: 5px;
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Champ d'ajout de tag */
+#tagInput {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #666666;
+}
+
+/* Alertes */
+.dialog-pane {
+    -fx-background-color: #2d2d3f;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #3c3f58;
+    -fx-text-fill: white;
+}
