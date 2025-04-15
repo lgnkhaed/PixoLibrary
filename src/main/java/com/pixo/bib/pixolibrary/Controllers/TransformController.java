@@ -77,6 +77,15 @@ public class TransformController {
     private void onSobelClicked() {
         applyFilter(new SobelFilter(), "Sobel");
     }
+    @FXML
+    private void rotateRight(){
+        applyFilter(new RotateRightFilter(), "RotateRight");
+    }
+
+    @FXML
+    private void rotateLeft(){
+        applyFilter(new RotateLeftFilter(), "RotateLeft");
+    }
 
     // method used in the FilterButton{to ensure No duplication in the Filters before applying}
     private void applyFilter(ImageFilter filter, String filterName) {
@@ -113,6 +122,19 @@ public class TransformController {
         Image result = filter.apply(originalImage);
         myImageView.setImage(result);
         if (!isAlreadyApplied) {}
+        if(filterName.equals("RotateRight") || filterName.equals("RotateLeft")){
+            Image result_img = filter.apply(myImageView.getImage());
+            myImageView.setImage(result_img);
+            if (!isAlreadyApplied) {
+                //metadataManager.addTransformation(currentImagePath, filterName);
+            }
+        }else {
+            Image result_img = filter.apply(originalImage);
+            myImageView.setImage(result_img);
+            if (!isAlreadyApplied) {
+                //metadataManager.addTransformation(currentImagePath, filterName);
+            }
+        }
     }
 
 
