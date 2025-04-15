@@ -42,7 +42,7 @@ public class TransformController {
             Parent root = loader.load();
 
             MainController mainController = loader.getController();
-            mainController.initialize(); //to reUpload Images and Metdatas
+            mainController.initializedConnected();//to reUpload Images and Metdatas
 
             Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
