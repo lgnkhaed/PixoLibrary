@@ -118,4 +118,23 @@ public class MetaDataManager {
                 .collect(Collectors.toList());
     }
 
+    public List<String> searchByTagOrTransformation(String query) {
+        loadMetadata();
+        List<String> results = new ArrayList<>();
+
+        List<String> tagResults = metadataList.stream()
+                .filter(m -> m.getTags().contains(query))
+                .map(MetaData::getImagePath)
+                .collect(Collectors.toList());
+
+       List<String> filterResults = metadataList.stream()
+                .filter(m -> m.getTransformations().contains(query))
+                .map(MetaData::getImagePath)
+                .collect(Collectors.toList());
+
+        results.addAll(tagResults);
+        results.addAll(filterResults);
+        return results.stream().distinct().collect(Collectors.toList());
+    }
+
 }

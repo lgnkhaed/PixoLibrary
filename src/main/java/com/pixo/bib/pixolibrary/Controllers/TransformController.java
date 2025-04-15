@@ -58,7 +58,7 @@ public class TransformController {
     }
     @FXML
     private void onGrayscaleClicked() {
-        applyFilter(new GrayscaleFilter(), "Grayscale");
+        applyFilter(new GrayscaleFilter(), "BlackWhite");
     }
     @FXML
     private void onRGBSwapClicked() {

@@ -145,15 +145,27 @@ public class MainController{
     // search with tag
     @FXML
     private void handleSearchByTag() {
-        String tag = searchTagField.getText().trim();
-        if (!tag.isEmpty()) {
-            List<String> matchingImages = metadataManager.getImagesByTag(tag);
+        String query = searchTagField.getText().trim();
+        if (!query.isEmpty()) {
+            List<String> matchingImages = metadataManager.searchByTagOrTransformation(query);
+            showSearchResultsWithPagination(matchingImages); // Nouvelle méthode
+        }
+    }
 
-            if (!matchingImages.isEmpty()) {
-                showSearchResults(matchingImages);
-            } else {
-                showAlert("No result", "No Image found with the Tag: " + tag);
-            }
+    private void showSearchResultsWithPagination(List<String> imagePaths) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/SearchResultsView.fxml"));
+            Parent root = loader.load();
+
+            SearchResultsController controller = loader.getController();
+            controller.initializeData(imagePaths, metadataManager);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'afficher les résultats : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
