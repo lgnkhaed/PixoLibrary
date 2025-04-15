@@ -1,168 +1,210 @@
 package com.pixo.bib.pixolibrary.Controllers;
-
+import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-public class MainController {
+public class MainController{
 
+    // Composants FXML
     @FXML private ImageView myImageView;
+    @FXML private TextField tagInput;
+    @FXML private ListView<String> tagsListView;
+    @FXML private TextField searchTagField;
 
-    //the list of the Images to display and
+    // Données
     private final ArrayList<String> imagesList = new ArrayList<>();
-    private int currentIndex=0;
-    private int numberOfImages=2;
+    private int currentIndex = 0;
+    private final MetaDataManager metadataManager = new MetaDataManager();
 
-    // getter and setter for Number of images
-    public int getNumberOfImages(){
-        return numberOfImages;
-    }
-    public void setNumberOfImages(int numberOfImages){this.numberOfImages=numberOfImages;}
-
-    //the first setup of the MainView
+    // intialize method for Mainview{ upload Images from uploads , upload metada From json file
     @FXML
     public void initialize() {
-        imagesList.clear(); // make sure it's clean
+        metadataManager.loadMetadata();
+        loadImagesFromUploads();
 
-        // Path to Uploads
-        File uploadsPic = new File("uploads");
+        if (!imagesList.isEmpty()) {
+            showCurrentImage();
+            updateTagsList();
+        }
+    }
 
-        if (uploadsPic.exists()) {
-            File[] files = uploadsPic.listFiles();
+    //upload pictures from Uploads directory
+    private void loadImagesFromUploads() {
+        imagesList.clear();
+        File uploadsDir = new File("uploads");
+
+        if (uploadsDir.exists()) {
+            File[] files = uploadsDir.listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.getName().matches("picture\\d+\\..+")) {
-
-                        String uploadsPath = "uploads/" + file.getName();
-                        imagesList.add(uploadsPath);
+                        imagesList.add("uploads/" + file.getName());
                     }
                 }
-                //set The NumberOfPictures
-                setNumberOfImages(imagesList.size());
-                //System.out.println("Loaded " + getNumberOfImages() + " images from uploads.");
             }
-        } else {
-            System.out.println("Resources image directory doesn't exist.");
-        }
-
-        //display the firstImage
-        if (!imagesList.isEmpty()) {
-            showCurrentImage();
         }
     }
 
-    // upload picture {it uploads the picture into /uploads so it will be easy to use in the initialise method}
+    // methods to Display the Image
+    @FXML
+    private void handleNextImage() {
+        if (imagesList.isEmpty()) return;
+        currentIndex = (currentIndex + 1) % imagesList.size();
+        showCurrentImage();
+    }
+    private void showCurrentImage() {
+        if (imagesList.isEmpty()) return;
+        try {
+            String path = imagesList.get(currentIndex);
+            Image image = new Image(new File(path).toURI().toString());
+            myImageView.setImage(image);
+            updateTagsList();
+        } catch (Exception e) {
+            showAlert("Error", "cannot load image from ");
+        }
+    }
+
+
     @FXML
     private void uploadPicture() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose a Picture");
-        fileChooser.getExtensionFilters().addAll(
+        fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
 
         File selectedFile = fileChooser.showOpenDialog(myImageView.getScene().getWindow());
-
         if (selectedFile != null) {
             try {
-                // Create or use "uploads" directory relative to the working directory
                 File uploadsDir = new File("uploads");
-                if (!uploadsDir.exists()) {
-                    System.out.println("UploadsDirectory doesn't exist.");
-                    uploadsDir.mkdirs();
-                }
+                if (!uploadsDir.exists()) uploadsDir.mkdir();
 
-                // numberOfPictures
-                int count = (int) java.util.Arrays.stream(Objects.requireNonNull(uploadsDir.listFiles()))
-                        .filter(file -> file.getName().matches("picture\\d+\\..+"))
-                        .count();
-                setNumberOfImages(count + 1);
+                String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf("."));
+                String newFileName = "picture" + (uploadsDir.listFiles().length + 1) + extension;
+                File destination = new File(uploadsDir, newFileName);
 
-                //file extension
-                String extension = selectedFile.getName().substring(
-                        selectedFile.getName().lastIndexOf(".")
-                        );
-
-                //create destination file name: picture{number}.{ext}
-                File destination = new File(uploadsDir, "picture" + getNumberOfImages() + extension);
-
-                //copy the file
-                java.nio.file.Files.copy(
-                        selectedFile.toPath(),
-                        destination.toPath(),
-                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                );
-
-                //display the pic
-                Image image = new Image(destination.toURI().toString());
-                myImageView.setImage(image);
-
-                //add image's path to imageList
-                imagesList.add("uploads/" + destination.getName());
+                Files.copy(selectedFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                imagesList.add("uploads/" + newFileName);
                 currentIndex = imagesList.size() - 1;
-
-                //System.out.println("Image uploaded to: " + destination.getAbsolutePath());
-
-            } catch (Exception e) {
-                System.out.println("Error while uploading: " + e.getMessage());
-                e.printStackTrace();
+                showCurrentImage();
+            } catch (IOException e) {
+                showAlert("Error", "Couldn't upload picture");
             }
         }
     }
 
-    // To display The image with the index currentIndex
-    private void showCurrentImage() {
-        try {
-            String path = imagesList.get(currentIndex);
-            //System.out.println("Current image path: " + path+"\n");
+    //handling tags
 
-            File imageFile = new File(path);
-            if (!imageFile.exists()) {
-                //System.out.println("Image file does not exist: " + path);
-                return;
-            }
+    // add tag to Image
+    @FXML
+    private void handleAddTag() {
+        if (imagesList.isEmpty()) return;
 
-            Image image = new Image(imageFile.toURI().toString());
-            myImageView.setImage(image);
-
-        } catch (Exception e) {
-            System.out.println("Error while accesing the image : " + e.getMessage());
+        String tag = tagInput.getText().trim();
+        if (!tag.isEmpty()) {
+            metadataManager.addTag(imagesList.get(currentIndex), tag);
+            updateTagsList();
+            tagInput.clear();
         }
     }
 
-    // show the next image
+    // remove Tag to image
     @FXML
-    private void showNextImage() {
-        currentIndex = (currentIndex + 1) % imagesList.size(); // boucle
-        showCurrentImage();
+    private void handleRemoveTag() {
+        if (imagesList.isEmpty()) return;
+
+        String selectedTag = tagsListView.getSelectionModel().getSelectedItem();
+        if (selectedTag != null) {
+            metadataManager.removeTag(imagesList.get(currentIndex), selectedTag);
+            updateTagsList();
+        }
     }
 
-    // go to transformation
+    // update Tags {display tags // nedded when add or remove Tags}
+    private void updateTagsList() {
+        if (!imagesList.isEmpty()) {
+            List<String> tags = metadataManager.getTagsForImage(imagesList.get(currentIndex));
+            tagsListView.getItems().setAll(tags);
+        }
+    }
+
+    //Searching Tags
+
+    // search with tag
     @FXML
-    private void transformationPanel() {
+    private void handleSearchByTag() {
+        String query = searchTagField.getText().trim();
+        if (!query.isEmpty()) {
+            List<String> matchingImages = metadataManager.searchByTagOrTransformation(query);
+            showSearchResultsWithPagination(matchingImages); // Nouvelle méthode
+        }
+    }
+
+    private void showSearchResultsWithPagination(List<String> imagePaths) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/TransformView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/SearchResultsView.fxml"));
             Parent root = loader.load();
 
-            TransformController transformController = loader.getController();
-            transformController.setImage(myImageView.getImage());
+            SearchResultsController controller = loader.getController();
+            controller.initializeData(imagePaths, metadataManager);
 
-            Stage stage = (Stage) myImageView.getScene().getWindow();
+            Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'afficher les résultats : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    // display the results
+    private void showSearchResults(List<String> imagePaths) {
+        // Version simplifiée sans dépendances externes
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Searching Results");
+        alert.setHeaderText("Images found (" + imagePaths.size() + "):");
 
+        String content = String.join("\n", imagePaths);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    // go to transformation panel
+    @FXML
+    private void openTransformationPanel() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/TransformView.fxml"));
+            Parent root = loader.load();
+
+            TransformController controller = loader.getController();
+            controller.setImage(myImageView.getImage());
+            controller.setImagePath(imagesList.get(currentIndex));
+
+            Stage stage = (Stage) myImageView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            showAlert("Eroor", "Can't open transform panel");
+        }
+    }
+
+    // method to display error message  on alert window
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

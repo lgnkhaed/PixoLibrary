@@ -2,7 +2,7 @@ package com.pixo.bib.pixolibrary.Model.Filters;
 
 import javafx.scene.image.*;
 
-public class flipHorizontalFilter implements ImageFilter {
+public class FlipHorizontalFilter implements ImageFilter {
 
     @Override
     public Image apply(Image inputImage) {
