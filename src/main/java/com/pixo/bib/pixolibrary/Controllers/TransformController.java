@@ -70,6 +70,9 @@ public class TransformController {
         applyFilter(new SobelFilter(), "Sobel");
     }
 
+    @FXML
+    private void saveTransformations(){metadataManager.saveMetadata();}
+
     // method used in the FilterButton{to ensure No duplication in the Filters before applying}
     private void applyFilter(ImageFilter filter, String filterName) {
         // verify if the image is set
@@ -79,7 +82,7 @@ public class TransformController {
         metadataManager.loadMetadata();
         boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
 
-        // If the Filter is already applied , we take off the filer
+        // If the Filter is already applied , we take off the filter
         if (isAlreadyApplied) {
             myImageView.setImage(originalImage);
             metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
@@ -90,9 +93,9 @@ public class TransformController {
             myImageView.setImage(result);
             metadataManager.addTransformation(currentImagePath, filterName);
         }
-
-        metadataManager.saveMetadata();
     }
+
+
 
     // method to display error message  on alert window
     private void showAlert(String title, String message) {
