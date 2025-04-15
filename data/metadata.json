@@ -1,46 +1,24 @@
 [
   {
     "imagePath": "uploads/picture1.jpg",
-    "tags": [
-      "lion",
-      "nature",
-      "savana",
-      "sauvage"
-    ],
+    "tags": [],
     "transformations": [
       "Mirror",
-      "Grayscale"
-    ]
-  },
-  {
-    "imagePath": "uploads/picture3.JPG",
-    "tags": [
-      "capture",
-      "hand writing",
-      "paper",
-      "mba3bes",
-      "nature"
-    ],
-    "transformations": [
-      "Mirror"
+      "BlackWhite",
+      "RGBSwap",
+      "Sepia",
+      "Sobel",
+      "RotateRight",
+      "RotateLeft"
     ]
   },
   {
     "imagePath": "uploads/picture2.jpg",
     "tags": [
-      "panda",
-      "nature"
+      "hello"
     ],
     "transformations": [
-      "RGBSwap",
-      "Sobel"
+      "Mirror"
     ]
-  },
-  {
-    "imagePath": "uploads/picture4.png",
-    "tags": [
-      "nature"
-    ],
-    "transformations": []
   }
 ]

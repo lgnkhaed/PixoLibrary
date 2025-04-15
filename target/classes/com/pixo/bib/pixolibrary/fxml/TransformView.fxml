@@ -13,8 +13,6 @@
         <Button fx:id="myRGBSwapButton" layoutX="31.0" layoutY="350.0" mnemonicParsing="false" onAction="#onRGBSwapClicked" prefHeight="25.0" prefWidth="176.0" text="RGB Swap" />
       <Button fx:id="mySopelButton" layoutX="31.0" layoutY="416.0" mnemonicParsing="false" onAction="#onSobelClicked" prefHeight="25.0" prefWidth="176.0" text="Sobel" />
       <Button fx:id="myReturnButton" layoutX="31.0" layoutY="29.0" mnemonicParsing="false" onAction="#goBackMainView" text="return" />
-      <Button fx:id="saveButton" layoutX="31.0" layoutY="159.0" mnemonicParsing="false" onAction="#saveTransformations" prefHeight="25.0" prefWidth="176.0" text="save changes" />
-      <Button fx:id="rotateRightButton" layoutX="31.0" layoutY="217.0" mnemonicParsing="false" onAction="#rotateRight" prefHeight="25.0" prefWidth="176.0" text="Rotate Right" />
-      <Button fx:id="rotateLeftButton" layoutX="31.0" layoutY="250.0" mnemonicParsing="false" onAction="#rotateLeft" prefHeight="25.0" prefWidth="176.0" text="Rotate Left" />
+      <Button fx:id="saveButton" layoutX="31.0" layoutY="242.0" mnemonicParsing="false" onAction="#saveTransformations" prefHeight="25.0" prefWidth="176.0" text="save changes" />
     </children>
 </Pane>
