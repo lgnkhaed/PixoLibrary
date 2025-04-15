@@ -25,6 +25,9 @@ public class TransformController {
         myImageView.setImage(image);
         currentActiveFilter = null; //take off the current Active filters
     }
+    // method to save transformations
+    @FXML
+    private void saveTransformations(){metadataManager.saveMetadata();}
 
     // used in MainController , to set the apth of the originalImage while opening
     public void setImagePath(String path) {
@@ -70,9 +73,6 @@ public class TransformController {
         applyFilter(new SobelFilter(), "Sobel");
     }
 
-    @FXML
-    private void saveTransformations(){metadataManager.saveMetadata();}
-
     // method used in the FilterButton{to ensure No duplication in the Filters before applying}
     private void applyFilter(ImageFilter filter, String filterName) {
         // verify if the image is set
@@ -83,16 +83,20 @@ public class TransformController {
         boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
 
         // If the Filter is already applied , we take off the filter
+        /*
         if (isAlreadyApplied) {
-            myImageView.setImage(originalImage);
-            metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
+            //myImageView.setImage(originalImage);
+            //metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
         }
         // else we apply it
         else {
             Image result = filter.apply(originalImage);
             myImageView.setImage(result);
             metadataManager.addTransformation(currentImagePath, filterName);
-        }
+        }*/
+        Image result = filter.apply(originalImage);
+        myImageView.setImage(result);
+        if (!isAlreadyApplied) {metadataManager.addTransformation(currentImagePath, filterName);}
     }
 
 
