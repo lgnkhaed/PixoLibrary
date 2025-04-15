@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="derby">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/lib/derby.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/lib/derbytools.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs/scores/java/client" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs/scores/java/common" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs/scores/java/server" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs/simple" />
+      <root url="file://$PROJECT_DIR$/../../../../Program Files/Java/jdk-21/db-derby-10.17.1.0-bin/demo/programs/vtis/java" />
+    </SOURCES>
+  </library>
+</component>

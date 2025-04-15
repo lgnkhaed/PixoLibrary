@@ -1,6 +1,8 @@
 package com.pixo.bib.pixolibrary.Controllers;
 import com.pixo.bib.pixolibrary.Model.Filters.*;
 import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
+import com.pixo.bib.pixolibrary.dao.ImageDAO;
+import com.pixo.bib.pixolibrary.dao.TransformationDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,11 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class TransformController {
     private Image originalImage;
     private String currentImagePath;
-    private final MetaDataManager metadataManager = new MetaDataManager();
+   // private final MetaDataManager metadataManager = new MetaDataManager();
+   private ImageDAO imageDAO = new ImageDAO();
+    private TransformationDAO transformationDAO = new TransformationDAO();
     private String currentActiveFilter;
     @FXML private ImageView myImageView;
 
@@ -27,7 +32,7 @@ public class TransformController {
     }
     // method to save transformations
     @FXML
-    private void saveTransformations(){metadataManager.saveMetadata();}
+    private void saveTransformations(){}
 
     // used in MainController , to set the apth of the originalImage while opening
     public void setImagePath(String path) {
@@ -79,9 +84,20 @@ public class TransformController {
         if (myImageView.getImage() == null || originalImage == null) return;
 
         // verify if the filter has been applied before {avoids having the same tags many times} {use the hasTransformation method in metaDataManager}
-        metadataManager.loadMetadata();
-        boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
-
+       // metadataManager.loadMetadata();
+        //boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
+        int imageId = 0;
+        try {
+            imageId = imageDAO.getImageIdByPath(currentImagePath);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        boolean isAlreadyApplied = false;
+        try {
+            isAlreadyApplied = transformationDAO.getTransformations(imageId).contains(filterName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         // If the Filter is already applied , we take off the filter
         /*
         if (isAlreadyApplied) {
@@ -96,7 +112,7 @@ public class TransformController {
         }*/
         Image result = filter.apply(originalImage);
         myImageView.setImage(result);
-        if (!isAlreadyApplied) {metadataManager.addTransformation(currentImagePath, filterName);}
+        if (!isAlreadyApplied) {}
     }
 
 

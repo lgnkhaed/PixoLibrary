@@ -11,6 +11,7 @@ module com.pixo.bib.pixolibrary {
     requires com.almasb.fxgl.all;
     requires com.google.gson;
     requires javafx.swing;
+    requires java.sql;
     exports com.pixo.bib.pixolibrary.Controllers;
 
     // Open the package for reflection so FXML can access controllers
