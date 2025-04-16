@@ -136,14 +136,14 @@ public class MainController{
             String path = imagesList.get(currentIndex);
             Image image = new Image(new File(path).toURI().toString());
 
-            if(isConnected()) {
-                myImageView.setImage(image);
-                updateTagsList();
-            }else{
-                Image encyrptedImage = getImageEncryptor().encrypt(image,getHashPassword().sha256(myPassword));
-                myImageView.setImage(encyrptedImage);
-            }
-        } catch (Exception e) {
+                if(isConnected()) {
+                    myImageView.setImage(image);
+                    updateTagsList();
+                }else{
+                    Image encyrptedImage = getImageEncryptor().encrypt(image,getHashPassword().sha256(myPassword));
+                    myImageView.setImage(encyrptedImage);
+                }
+        }catch(Exception e) {
             showAlert("Error", "cannot load image from ");
         }
     }
@@ -167,7 +167,7 @@ public class MainController{
         try (Connection conn = DataBaseConnection.getConnection()) {
             conn.setAutoCommit(false); // Début de transaction
 
-            // 1. Copier le fichier
+            // copyfile
             File uploadsDir = new File("uploads");
             if (!uploadsDir.exists()) uploadsDir.mkdir();
 
@@ -176,11 +176,11 @@ public class MainController{
             File destination = new File(uploadsDir, newFileName);
             Files.copy(selectedFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-            // 2. Insérer dans la base de données
+            // insert to database
             String dbPath = "uploads/" + newFileName;
             int imageId = imageDAO.insertImage(dbPath); // <-- Clé ici
 
-            // 3. Mettre à jour l'interface
+            // updating the interface
             imagesList.add(dbPath);
             currentIndex = imagesList.size() - 1;
             showCurrentImage();

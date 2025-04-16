@@ -1,27 +1,38 @@
 package com.pixo.bib.pixolibrary.Controllers;
 import com.pixo.bib.pixolibrary.Model.Filters.*;
+import com.pixo.bib.pixolibrary.Model.Secuirity.HashPassword;
+import com.pixo.bib.pixolibrary.Model.Secuirity.ImageEncryptor;
 import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
 import com.pixo.bib.pixolibrary.dao.ImageDAO;
 import com.pixo.bib.pixolibrary.dao.TransformationDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class TransformController {
+
     private Image originalImage;
     private String currentImagePath;
-   // private final MetaDataManager metadataManager = new MetaDataManager();
-   private ImageDAO imageDAO = new ImageDAO();
+    // private final MetaDataManager metadataManager = new MetaDataManager();
+    private ImageDAO imageDAO = new ImageDAO();
     private TransformationDAO transformationDAO = new TransformationDAO();
     private String currentActiveFilter;
+    private String seed_StringEncrypt = null;
+    private String seed_StringDecrypt=null;
+
+
     @FXML private ImageView myImageView;
 
     // Initialisation , used in MainController
@@ -108,20 +119,6 @@ public class TransformController {
             throw new RuntimeException(e);
         }
 
-        // If the Filter is already applied , we take off the filter
-    /*
-    if (isAlreadyApplied) {
-        //myImageView.setImage(originalImage);
-        //metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
-    }
-    // else we apply it
-    else {
-        Image result = filter.apply(originalImage);
-        myImageView.setImage(result);
-        metadataManager.addTransformation(currentImagePath, filterName);
-    }
-    */
-
         // Nouvelle implémentation corrigée
         if(filterName.equals("RotateRight") || filterName.equals("RotateLeft")){
             // Pour les rotations : appliquer sur l'image actuelle (permet des rotations multiples)
@@ -158,5 +155,174 @@ public class TransformController {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+
+    @FXML
+    private void encryptImage(){
+        try{
+            // verifying if the Image has "ENCRYPT" as Transformation or Not
+            int idImageToEncrypt = imageDAO.getImageIdByPath(currentImagePath);
+            if ((!transformationDAO.getTransformations(idImageToEncrypt).contains("ENCRYPT"))){
+                // if the Image is not Encrypted
+                enterPasswordEncryptAlert();
+                if(seed_StringEncrypt != null){
+                    // encrypting the image and displaying it
+                    HashPassword  hashPassword  = new HashPassword();
+                    ImageEncryptor imageEncryptor = new ImageEncryptor();
+                    byte[] seed = hashPassword.sha256(seed_StringEncrypt);
+                    Image imageEncrypted = imageEncryptor.encrypt(originalImage, seed);
+                    myImageView.setImage(imageEncrypted);
+
+                    // setting seed_String to null after finishing
+                    seed_StringEncrypt = null;
+                    //Adding "ENCRYPT" transformation
+                    transformationDAO.addTransformation(idImageToEncrypt, "ENCRYPT");
+                }else{
+                    showAlert("Error","Encryption didn't worked , Password not entered");
+                }
+            }else{
+                showAlert("Error","Image already encrypted");
+            }
+        } catch(SQLException eSql){
+            showAlert("ERROR","SQL Error while encrypting");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @FXML
+    private void decryptImage(){
+        try{
+            int idImageToDecrypt = imageDAO.getImageIdByPath(currentImagePath);
+            if(transformationDAO.getTransformations(idImageToDecrypt).contains("ENCRYPT")){
+                   enterPasswordDecryptAlert();
+                   if(seed_StringDecrypt != null){
+                       HashPassword  hashPassword  = new HashPassword();
+                       ImageEncryptor imageEncryptor = new ImageEncryptor();
+                       byte[] seed = hashPassword.sha256(seed_StringDecrypt);
+                        Image imageDecrypted = imageEncryptor.decrypt(originalImage, seed);
+                        myImageView.setImage(imageDecrypted);
+                        //removing "ENCRYPT" transformation
+                       transformationDAO.deleteTransformation(idImageToDecrypt, "ENCRYPT");
+                       seed_StringDecrypt = null;
+                   }else{
+                       showAlert("Error","Decryption didn't worked , Password not entered");
+                   }
+            }else{
+                showAlert("Error","Image already Decrypted");
+            }
+
+        }catch (SQLException eSql){
+            showAlert("Error", "SQL Error while decrypting");
+        } catch (Exception e) {
+            showAlert(e.getMessage(), "Can't decrypt image");
+        }
+
+
+    }
+
+
+
+    // function to popup when encrypting picture
+    private void enterPasswordEncryptAlert(){        // Create a dialog window
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("ENCRYPTION ");
+        dialog.setHeaderText("Encryption Action needs a Password");
+
+        // Set the button types
+        ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
+
+        // Create the password field
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+
+        // Layout for the dialog content
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        grid.add(new Label("Password:"), 0, 0);
+        grid.add(passwordField, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Enable/Disable submit button depending on whether a password was entered
+        Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
+        submitButton.setDisable(true);
+
+        passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
+            submitButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Convert the result to the password string when the submit button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == submitButtonType) {
+                return passwordField.getText();
+            }
+            return null;
+        });
+
+        // Show dialog and wait for result
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(password -> {
+            // Handle password validation here
+               seed_StringEncrypt = password ;
+            }
+        );
+
+    }
+
+    // method to popup when decrypting picture
+    private void enterPasswordDecryptAlert(){
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("DERYPTION ");
+        dialog.setHeaderText("enter the password");
+
+        // Set the button types
+        ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
+
+        // Create the password field
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+
+        // Layout for the dialog content
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        grid.add(new Label("Password:"), 0, 0);
+        grid.add(passwordField, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Enable/Disable submit button depending on whether a password was entered
+        Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
+        submitButton.setDisable(true);
+
+        passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
+            submitButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Convert the result to the password string when the submit button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == submitButtonType) {
+                return passwordField.getText();
+            }
+            return null;
+        });
+
+        // Show dialog and wait for result
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(password -> {
+                    // Handle password validation here
+                    seed_StringDecrypt = password ;
+                }
+        );
     }
 }

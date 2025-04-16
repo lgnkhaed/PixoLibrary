@@ -16,6 +16,20 @@ public class TransformationDAO {
         }
     }
 
+    // method to delete Transformation
+    public void deleteTransformation(int imageId, String type) throws SQLException {
+        String sql = "DELETE FROM transformations WHERE image_id = ? AND type = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, imageId);
+            pstmt.setString(2, type);
+            pstmt.executeUpdate();
+        }
+    }
+
+
+
     // Récupérer toutes les transformations d'une image
     public List<String> getTransformations(int imageId) throws SQLException {
         List<String> transformations = new ArrayList<>();
