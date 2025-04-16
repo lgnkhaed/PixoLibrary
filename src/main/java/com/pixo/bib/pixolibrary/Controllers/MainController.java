@@ -287,7 +287,7 @@ public class MainController{
                 }
                 showSearchResultsWithPagination(matchingImages);
 
-                showSearchResultsWithPagination(matchingImages); // Nouvelle méthode
+
             }
         }else{
             messageDisplay.setText("You have to be logged in To be able to search tag");
@@ -304,9 +304,9 @@ public class MainController{
             //controller.initializeData(imagePaths, metadataManager);
             controller.initializeData(imagePaths, imageDAO, tagDAO, transformationDAO);
 
-            Stage stage = new Stage();
+            Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.show();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les résultats : " + e.getMessage());
             e.printStackTrace();

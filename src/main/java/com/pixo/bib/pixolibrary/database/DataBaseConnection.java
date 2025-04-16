@@ -13,34 +13,39 @@ public class DataBaseConnection {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Création de la table IMAGES
-            stmt.executeUpdate(
-                    "CREATE TABLE images (" +
-                            "id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                            "path VARCHAR(255) UNIQUE NOT NULL)"
-            );
-
-            // Création de la table TAGS
-            stmt.executeUpdate(
-                    "CREATE TABLE tags (" +
-                            "image_id INT, " +
-                            "tag VARCHAR(50), " +
-                            "FOREIGN KEY (image_id) REFERENCES images(id))"
-            );
-
-            // Création de la table TRANSFORMATIONS
-            stmt.executeUpdate(
-                    "CREATE TABLE transformations (" +
-                            "image_id INT, " +
-                            "type VARCHAR(50) NOT NULL, " +
-                            "parameters VARCHAR(255), " +
-                            "FOREIGN KEY (image_id) REFERENCES images(id))"
-            );
-
-        } catch (SQLException e) {
-            if (!e.getSQLState().equals("X0Y32")) { // Code d'erreur "table existe déjà"
-                throw e;
+            try {
+                stmt.executeUpdate(
+                        "CREATE TABLE images (" +
+                                "id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                                "path VARCHAR(255) UNIQUE NOT NULL)"
+                );
+            } catch (SQLException e) {
+                if (!e.getSQLState().equals("X0Y32")) throw e;
             }
+
+            try {
+                stmt.executeUpdate(
+                        "CREATE TABLE tags (" +
+                                "image_id INT, " +
+                                "tag VARCHAR(50), " +
+                                "FOREIGN KEY (image_id) REFERENCES images(id))"
+                );
+            } catch (SQLException e) {
+                if (!e.getSQLState().equals("X0Y32")) throw e;
+            }
+
+            try {
+                stmt.executeUpdate(
+                        "CREATE TABLE transformations (" +
+                                "image_id INT, " +
+                                "type VARCHAR(50) NOT NULL, " +
+                                "parameters VARCHAR(255), " +
+                                "FOREIGN KEY (image_id) REFERENCES images(id))"
+                );
+            } catch (SQLException e) {
+                if (!e.getSQLState().equals("X0Y32")) throw e;
+            }
+
         }
     }
 

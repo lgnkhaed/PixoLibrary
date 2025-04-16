@@ -93,8 +93,8 @@ public class TransformController {
         if (myImageView.getImage() == null || originalImage == null) return;
 
         // verify if the filter has been applied before {avoids having the same tags many times} {use the hasTransformation method in metaDataManager}
-       // metadataManager.loadMetadata();
-        //boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
+        // metadataManager.loadMetadata();
+        // boolean isAlreadyApplied = metadataManager.hasTransformation(currentImagePath, filterName);
         int imageId = 0;
         try {
             imageId = imageDAO.getImageIdByPath(currentImagePath);
@@ -107,32 +107,45 @@ public class TransformController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         // If the Filter is already applied , we take off the filter
-        /*
-        if (isAlreadyApplied) {
-            //myImageView.setImage(originalImage);
-            //metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
-        }
-        // else we apply it
-        else {
-            Image result = filter.apply(originalImage);
-            myImageView.setImage(result);
-            metadataManager.addTransformation(currentImagePath, filterName);
-        }*/
+    /*
+    if (isAlreadyApplied) {
+        //myImageView.setImage(originalImage);
+        //metadataManager.getTransformationsForImage(currentImagePath).remove(filterName);
+    }
+    // else we apply it
+    else {
         Image result = filter.apply(originalImage);
         myImageView.setImage(result);
-        if (!isAlreadyApplied) {}
+        metadataManager.addTransformation(currentImagePath, filterName);
+    }
+    */
+
+        // Nouvelle implémentation corrigée
         if(filterName.equals("RotateRight") || filterName.equals("RotateLeft")){
+            // Pour les rotations : appliquer sur l'image actuelle (permet des rotations multiples)
             Image result_img = filter.apply(myImageView.getImage());
             myImageView.setImage(result_img);
+
             if (!isAlreadyApplied) {
-                //metadataManager.addTransformation(currentImagePath, filterName);
+                try {
+                    transformationDAO.addTransformation(imageId, filterName);
+                } catch (SQLException e) {
+                    showAlert("Erreur", "Échec de l'enregistrement de la transformation");
+                }
             }
-        }else {
+        } else {
+            // Pour les autres filtres : toujours utiliser l'original
             Image result_img = filter.apply(originalImage);
             myImageView.setImage(result_img);
+
             if (!isAlreadyApplied) {
-                //metadataManager.addTransformation(currentImagePath, filterName);
+                try {
+                    transformationDAO.addTransformation(imageId, filterName);
+                } catch (SQLException e) {
+                    showAlert("Erreur", "Échec de l'enregistrement de la transformation");
+                }
             }
         }
     }
