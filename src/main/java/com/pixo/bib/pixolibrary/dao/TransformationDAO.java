@@ -46,4 +46,24 @@ public class TransformationDAO {
             }
         }
     }
+
+    public List<String> searchImagesByTransformation(String transformationQuery) throws SQLException {
+        List<String> matchingImagePaths = new ArrayList<>();
+        String sql = "SELECT DISTINCT i.path FROM images i " +
+                "JOIN transformations t ON i.id = t.image_id " +
+                "WHERE LOWER(t.type) LIKE LOWER(?)";
+
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + transformationQuery + "%");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    matchingImagePaths.add(rs.getString("path"));
+                }
+            }
+        }
+        return matchingImagePaths;
+    }
 }

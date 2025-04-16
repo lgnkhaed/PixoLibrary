@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.SearchResultsController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.SearchResultsController">
 
     <center>
         <StackPane>
-            <ImageView fx:id="currentImageView" fitHeight="400" fitWidth="400" preserveRatio="true" />
+            <ImageView fx:id="currentImageView" fitHeight="500.0" fitWidth="602.0" preserveRatio="true" />
         </StackPane>
     </center>
 
