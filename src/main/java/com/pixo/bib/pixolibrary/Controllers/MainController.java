@@ -30,9 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MainController{
 
@@ -274,26 +272,31 @@ public class MainController{
     //Searching Tags
 
     // search with tag
+
     @FXML
     private void handleSearchByTag() {
         if(isConnected()) {
             String query = searchTagField.getText().trim();
             if (!query.isEmpty()) {
-                //List<String> matchingImages = metadataManager.searchByTagOrTransformation(query);
-                List<String> matchingImages = null;
                 try {
-                    matchingImages = tagDAO.searchImagesByTag(query);
+                    // Recherche dans les tags ET transformations
+                    List<String> tagResults = tagDAO.searchImagesByTag(query);
+                    List<String> transformationResults = transformationDAO.searchImagesByTransformation(query);
+
+                    // Fusion des résultats sans doublons
+                    Set<String> combinedResults = new LinkedHashSet<>();
+                    combinedResults.addAll(tagResults);
+                    combinedResults.addAll(transformationResults);
+
+                    showSearchResultsWithPagination(new ArrayList<>(combinedResults));
+
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    showAlert("Erreur", "Échec de la recherche : " + e.getMessage());
                 }
-                showSearchResultsWithPagination(matchingImages);
-
-
             }
-        }else{
-            messageDisplay.setText("You have to be logged in To be able to search tag");
+        } else {
+            messageDisplay.setText("Connectez-vous pour rechercher");
         }
-
     }
 
     private void showSearchResultsWithPagination(List<String> imagePaths) {
