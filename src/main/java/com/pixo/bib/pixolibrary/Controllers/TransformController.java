@@ -26,8 +26,8 @@ public class TransformController {
     private Image originalImage;
     private String currentImagePath;
     // private final MetaDataManager metadataManager = new MetaDataManager();
-    private ImageDAO imageDAO = new ImageDAO();
-    private TransformationDAO transformationDAO = new TransformationDAO();
+    private final ImageDAO imageDAO = new ImageDAO();
+    private final TransformationDAO transformationDAO = new TransformationDAO();
     private String currentActiveFilter;
     private String seed_StringEncrypt = null;
     private String seed_StringDecrypt=null;
@@ -167,11 +167,11 @@ public class TransformController {
                 // if the Image is not Encrypted
                 enterPasswordEncryptAlert();
                 if(seed_StringEncrypt != null){
+                    //System.out.println("Here i am in the main , this the password to encrypt : " + seed_StringEncrypt);
                     // encrypting the image and displaying it
-                    HashPassword  hashPassword  = new HashPassword();
-                    ImageEncryptor imageEncryptor = new ImageEncryptor();
-                    byte[] seed = hashPassword.sha256(seed_StringEncrypt);
-                    Image imageEncrypted = imageEncryptor.encrypt(originalImage, seed);
+                    byte[] seed = HashPassword.sha256(seed_StringEncrypt);
+                    //System.out.println("Here is the encrypted seed : " + java.util.Arrays.toString(seed));
+                    Image imageEncrypted = ImageEncryptor.encrypt(originalImage, seed);
                     myImageView.setImage(imageEncrypted);
 
                     // setting seed_String to null after finishing
@@ -199,12 +199,12 @@ public class TransformController {
             if(transformationDAO.getTransformations(idImageToDecrypt).contains("ENCRYPT")){
                    enterPasswordDecryptAlert();
                    if(seed_StringDecrypt != null){
-                       HashPassword  hashPassword  = new HashPassword();
-                       ImageEncryptor imageEncryptor = new ImageEncryptor();
-                       byte[] seed = hashPassword.sha256(seed_StringDecrypt);
-                        Image imageDecrypted = imageEncryptor.decrypt(originalImage, seed);
-                        myImageView.setImage(imageDecrypted);
-                        //removing "ENCRYPT" transformation
+                       //System.out.println("Here i am in the main , this the password to decrypt : " + seed_StringDecrypt);
+                       byte[] seed = HashPassword.sha256(seed_StringDecrypt);
+                       //System.out.println("Here is the decrypted seed : " + java.util.Arrays.toString(seed));
+                       Image imageDecrypted = ImageEncryptor.decrypt(myImageView.getImage(), seed);
+                       myImageView.setImage(imageDecrypted);
+                       //removing "ENCRYPT" transformation
                        transformationDAO.deleteTransformation(idImageToDecrypt, "ENCRYPT");
                        seed_StringDecrypt = null;
                    }else{

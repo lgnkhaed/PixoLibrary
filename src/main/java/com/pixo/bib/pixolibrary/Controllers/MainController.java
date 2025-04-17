@@ -72,8 +72,9 @@ public class MainController{
    // private final MetaDataManager metadataManager = new MetaDataManager();
     private final ImageDAO imageDAO = new ImageDAO();
     private final TagDAO tagDAO = new TagDAO();
-    private final TransformationDAO transformationDAO = new TransformationDAO();
-    // intialize method for Mainview{ upload Images from uploads , upload metada From json file
+    private final TransformationDAO transformationDAO = new TransformationDAO()
+            ;
+    // intialize method for Mainview{ upload Images from uploads }
     @FXML
     public void initialize() {
         try {
@@ -313,18 +314,6 @@ public class MainController{
         }
     }
 
-    // display the results
-    private void showSearchResults(List<String> imagePaths) {
-        // Version simplifiée sans dépendances externes
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Searching Results");
-        alert.setHeaderText("Images found (" + imagePaths.size() + "):");
-
-        String content = String.join("\n", imagePaths);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
     // go to transformation panel
     @FXML
     private void openTransformationPanel() {
@@ -337,10 +326,26 @@ public class MainController{
                 controller.setImage(myImageView.getImage());
                 controller.setImagePath(imagesList.get(currentIndex));
 
+                /*
+                // i have to see if the image is encrypted , if yes then it will be displayed encrypted and needed the right password to be decrypted
+                int idImageToTransform = imageDAO.getImageIdByPath(imagesList.get(currentIndex));
+
+                if(transformationDAO.getTransformations(idImageToTransform).contains("ENCRYPT")){
+                    byte[] seed = HashPassword.sha256("khaled");
+                    Image img_encrypted = ImageEncryptor.encrypt(myImageView.getImage(),seed);
+                    controller.setImage(img_encrypted);
+                    controller.setImagePath(imagesList.get(currentIndex));
+                }else{
+                    controller.setImage(myImageView.getImage());
+                    controller.setImagePath(imagesList.get(currentIndex));
+                }
+                 */
                 Stage stage = (Stage) myImageView.getScene().getWindow();
                 stage.setScene(new Scene(root));
             } catch (IOException e) {
                 showAlert("Eroor", "Can't open transform panel");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }else{
             messageDisplay.setText("You have to be logged in To be able to open transform panel");
