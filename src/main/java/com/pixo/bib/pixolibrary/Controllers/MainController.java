@@ -147,7 +147,7 @@ public class MainController{
     @FXML
     private void uploadPicture() {
         if (!isConnected) {
-            messageDisplay.setText("Veuillez vous connecter d'abord");
+            messageDisplay.setText("Login first");
             return;
         }
 
@@ -182,7 +182,7 @@ public class MainController{
 
             conn.commit(); // Validation
         } catch (IOException | SQLException e) {
-            showAlert("Erreur", "Échec de l'upload : " + e.getMessage());
+            showAlert("Error", "Upload failed: " + e.getMessage());
         }
     }
 
@@ -194,7 +194,7 @@ public class MainController{
     @FXML
     private void handleAddTag() {
         if (!isConnected()) {
-            messageDisplay.setText("Connectez-vous d'abord");
+            messageDisplay.setText("Login first");
             return;
         }
 
@@ -210,7 +210,7 @@ public class MainController{
             updateTagsList();
             tagInput.clear();
         } catch (SQLException e) {
-            showAlert("Erreur Base de Données", "Image non enregistrée : " + e.getMessage());
+            showAlert("Data Base error", "Image not saved  : " + e.getMessage());
         }
     }
 
@@ -289,11 +289,11 @@ public class MainController{
                     showSearchResultsWithPagination(new ArrayList<>(combinedResults));
 
                 } catch (SQLException e) {
-                    showAlert("Erreur", "Échec de la recherche : " + e.getMessage());
+                    showAlert("Error", "Search failed: " + e.getMessage());
                 }
             }
         } else {
-            messageDisplay.setText("Connectez-vous pour rechercher");
+            messageDisplay.setText("login first");
         }
     }
 
@@ -309,7 +309,7 @@ public class MainController{
             stage.setScene(new Scene(root));
             //stage.setMaximized(true);
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible d'afficher les résultats : " + e.getMessage());
+            showAlert("Error", "Display Results Failed : " + e.getMessage());
             e.printStackTrace();
         }
     }
