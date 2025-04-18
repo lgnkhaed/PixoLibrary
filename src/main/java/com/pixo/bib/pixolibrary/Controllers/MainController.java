@@ -75,7 +75,7 @@ public class MainController{
         } catch (SQLException e) {
             showAlert("Erreur DB", "Impossible de créer les tables");
         }
-        setIsConnected(false);
+        setIsConnected(true);
         loadImagesFromUploads();
 
 
@@ -328,7 +328,7 @@ public class MainController{
 
                 Stage stage = (Stage) myImageView.getScene().getWindow();
                 stage.setScene(new Scene(root));
-                stage.setMaximized(true);
+                //stage.setMaximized(true);
             } catch (IOException e) {
                 showAlert("Eroor", "Can't open transform panel");
             } catch (Exception e) {

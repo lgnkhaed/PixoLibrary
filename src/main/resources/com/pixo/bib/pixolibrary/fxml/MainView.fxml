@@ -26,8 +26,8 @@
         <Button layoutX="687.0" layoutY="285.0" onAction="#handleAddTag" prefHeight="35.0" prefWidth="99.0" text="Add" />
         <Button layoutX="587.0" layoutY="286.0" onAction="#handleRemoveTag" prefHeight="35.0" prefWidth="92.0" text="Remove" />
         <ListView fx:id="tagsListView" layoutX="587.0" layoutY="337.0" prefHeight="150.0" prefWidth="200.0" />
-        <Button fx:id="loginButton" layoutX="627.0" layoutY="142.0" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="120.0" text="LoginButton" />
-        <Text fx:id="messageDisplay" fill="WHITE" layoutX="532.0" layoutY="49.0" strokeMiterLimit="20.0" strokeType="OUTSIDE" strokeWidth="20.0" text="Welcome To Pixo!!!  Log in and start the visual exprience" textAlignment="CENTER" wrappingWidth="343.71759033203125">
+
+        <Text fx:id="messageDisplay" fill="WHITE" layoutX="518.0" layoutY="164.0" strokeMiterLimit="20.0" strokeType="OUTSIDE" strokeWidth="20.0" text="Welcome To Pixo !!! " textAlignment="CENTER" wrappingWidth="343.71759033203125">
             <font>
                 <Font name="Bookman Old Style Bold" size="24.0" />
             </font></Text>
