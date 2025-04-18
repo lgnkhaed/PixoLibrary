@@ -65,17 +65,19 @@ public class MainController{
    // private final MetaDataManager metadataManager = new MetaDataManager();
     private final ImageDAO imageDAO = new ImageDAO();
     private final TagDAO tagDAO = new TagDAO();
-    private final TransformationDAO transformationDAO = new TransformationDAO()
-            ;
+    private final TransformationDAO transformationDAO = new TransformationDAO();
     // intialize method for Mainview{ upload Images from uploads }
     @FXML
     public void initialize() {
+        /*
         try {
             DataBaseConnection.createTablesIfNotExist();
         } catch (SQLException e) {
             showAlert("Erreur DB", "Impossible de créer les tables");
         }
-        setIsConnected(false);
+
+         */
+        setIsConnected(true);
         loadImagesFromUploads();
 
 
@@ -112,6 +114,10 @@ public class MainController{
                 }
             }
         }
+    }
+
+    public void setMessageDisplay(String messageDisplay) {
+        this.messageDisplay.setText(messageDisplay);
     }
 
     // methods to Display the Image
@@ -277,7 +283,7 @@ public class MainController{
                 try {
                     // Recherche dans les tags ET transformations
 
-                    System.out.println("this is the query"+ query);
+                    //System.out.println("this is the query"+ query);
                     List<String> tagResults = tagDAO.searchImagesByTag(query);
                     List<String> transformationResults = transformationDAO.searchImagesByTransformation(query);
 
@@ -328,7 +334,7 @@ public class MainController{
 
                 Stage stage = (Stage) myImageView.getScene().getWindow();
                 stage.setScene(new Scene(root));
-                stage.setMaximized(true);
+                //stage.setMaximized(true);
             } catch (IOException e) {
                 showAlert("Eroor", "Can't open transform panel");
             } catch (Exception e) {
@@ -341,92 +347,13 @@ public class MainController{
 
     // method to display error message  on alert window
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-
-    // login method
-    @FXML
-    private void login(){
-        if(isConnected()){
-            messageDisplay.setText("You are already logged in");
-        }else{
-           enterPasswordAlert();
-        }
-    }
-
-    private boolean validatePassword(String inputPassword) {
-        // here i am hardcoding the password , to be changed after
-        String correctPassword = myPassword; // Replace with your logic
-        return inputPassword.equals(correctPassword);
-    }
-
-    // function to popup a login page
-    private void enterPasswordAlert(){        // Create a dialog window
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Access Required");
-        dialog.setHeaderText("Enter your access password");
-
-        // Set the button types
-        ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
-
-        // Create the password field
-        PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
-
-        // Layout for the dialog content
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        grid.add(new Label("Password:"), 0, 0);
-        grid.add(passwordField, 1, 0);
-
-        dialog.getDialogPane().setContent(grid);
-
-        // Enable/Disable submit button depending on whether a password was entered
-        Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
-        submitButton.setDisable(true);
-
-        passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
-            submitButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        // Convert the result to the password string when the submit button is clicked
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == submitButtonType) {
-                return passwordField.getText();
-            }
-            return null;
-        });
-
-        // Show dialog and wait for result
-        Optional<String> result = dialog.showAndWait();
-
-        result.ifPresent(password -> {
-            // Handle password validation here
-            if (validatePassword(password)) {
-                //System.out.println("Password correct! Access granted.");
-                setIsConnected(true);
-                messageDisplay.setText("You are logged in");
-                showCurrentImage();
-            } else {
-                System.out.println("Wrong password.");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Access Denied");
-                alert.setHeaderText(null);
-                alert.setContentText("The password you entered is incorrect.");
-                alert.showAndWait();
-            }
-        });
-
-    }
 
 }
 

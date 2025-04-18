@@ -12,21 +12,20 @@
     <children>
         <ImageView fx:id="myImageView" fitHeight="350.0" fitWidth="491.0" layoutX="27.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true" />
 
-        <!-- Boutons existants -->
+
         <Button fx:id="changeImageButton" layoutX="189.0" layoutY="493.0" onAction="#handleNextImage" prefHeight="35.0" prefWidth="120.0" text="Other Image" />
         <Button fx:id="myUploadButton" layoutX="321.0" layoutY="493.0" onAction="#uploadPicture" prefHeight="35.0" prefWidth="120.0" text="Click To Upload" />
         <Button fx:id="myTransformButton" layoutX="56.0" layoutY="493.0" onAction="#openTransformationPanel" prefHeight="35.0" prefWidth="120.0" text="Transform" />
 
-        <!-- Recherche par tags -->
+
         <TextField fx:id="searchTagField" layoutX="38.0" layoutY="50.0" prefHeight="38.0" prefWidth="318.0" promptText="Rechercher par tag ou filtre (ex: Nature, Sepia)..." />
         <Button layoutX="368.0" layoutY="50.0" onAction="#handleSearchByTag" prefHeight="38.0" prefWidth="120.0" text="Rechercher" />
 
-        <!-- Tags management -->
+
         <TextField fx:id="tagInput" layoutX="587.0" layoutY="231.0" prefHeight="35.0" prefWidth="200.0" promptText="Enter tag..." />
         <Button layoutX="687.0" layoutY="285.0" onAction="#handleAddTag" prefHeight="35.0" prefWidth="99.0" text="Add" />
         <Button layoutX="587.0" layoutY="286.0" onAction="#handleRemoveTag" prefHeight="35.0" prefWidth="92.0" text="Remove" />
         <ListView fx:id="tagsListView" layoutX="587.0" layoutY="337.0" prefHeight="150.0" prefWidth="200.0" />
-        <Button fx:id="loginButton" layoutX="627.0" layoutY="142.0" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="120.0" text="LoginButton" />
         <Text fx:id="messageDisplay" fill="WHITE" layoutX="532.0" layoutY="49.0" strokeMiterLimit="20.0" strokeType="OUTSIDE" strokeWidth="20.0" text="Welcome To Pixo!!!  Log in and start the visual exprience" textAlignment="CENTER" wrappingWidth="343.71759033203125">
             <font>
                 <Font name="Bookman Old Style Bold" size="24.0" />

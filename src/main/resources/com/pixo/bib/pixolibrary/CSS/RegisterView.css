@@ -1,0 +1,80 @@
+#mainPane {
+    -fx-background-color: linear-gradient(to bottom right, #000000, #1a1a1a);
+    -fx-padding: 20;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to bottom, #2b2b2b, #1a1a1a);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #555555;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 6, 0.4, 0, 2);
+    -fx-font-size: 12px;
+}
+
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-background-color: #111111;
+    -fx-text-fill: #dddddd;
+}
+
+
+#email {
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444444;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 1);
+}
+
+
+#password {
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444444;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 1);
+}
+
+#name {
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444444;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 1);
+}
+#firstname {
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444444;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 1);
+}
+
+#confirmPassword{
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #444444;
+    -fx-border-radius: 5px;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 1);
+}

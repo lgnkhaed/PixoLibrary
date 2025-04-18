@@ -11,7 +11,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/MainView.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/pixo/bib/pixolibrary/fxml/LoginView.fxml")));
         Scene scene = new Scene(root);
         stage.setTitle("Pixo Library");
         stage.setScene(scene);
