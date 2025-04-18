@@ -1,14 +1,11 @@
 package com.pixo.bib.pixolibrary.Controllers;
 import com.pixo.bib.pixolibrary.Model.Secuirity.HashPassword;
 import com.pixo.bib.pixolibrary.Model.Secuirity.ImageEncryptor;
-//import com.pixo.bib.pixolibrary.Model.metaData.MetaDataManager;
 import com.pixo.bib.pixolibrary.dao.ImageDAO;
 import com.pixo.bib.pixolibrary.dao.TagDAO;
 import com.pixo.bib.pixolibrary.dao.TransformationDAO;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import com.pixo.bib.pixolibrary.Utilis.ImageConverter;
 import com.pixo.bib.pixolibrary.database.DataBaseConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,9 +20,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,6 +30,7 @@ public class MainController{
 
     // password Hardcoded but it will be chnaged
     private String myPassword = "mySecret";
+
     // variables for security
     private HashPassword hashPassword = new HashPassword();
     private ImageEncryptor imageEncryptor = new ImageEncryptor();
@@ -90,6 +85,7 @@ public class MainController{
         }
     }
     //method act the same as initialize just set the isConnected to true -- to be used in the return buttons
+
     public void initializedConnected(){
         setIsConnected(true);
         //metadataManager.loadMetadata();
@@ -280,6 +276,8 @@ public class MainController{
             if (!query.isEmpty()) {
                 try {
                     // Recherche dans les tags ET transformations
+
+                    System.out.println("this is the query"+ query);
                     List<String> tagResults = tagDAO.searchImagesByTag(query);
                     List<String> transformationResults = transformationDAO.searchImagesByTransformation(query);
 
@@ -305,12 +303,11 @@ public class MainController{
             Parent root = loader.load();
 
             SearchResultsController controller = loader.getController();
-            //controller.initializeData(imagePaths, metadataManager);
             controller.initializeData(imagePaths, imageDAO, tagDAO, transformationDAO);
 
             Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
-
+            //stage.setMaximized(true);
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les résultats : " + e.getMessage());
             e.printStackTrace();
@@ -329,22 +326,9 @@ public class MainController{
                 controller.setImage(myImageView.getImage());
                 controller.setImagePath(imagesList.get(currentIndex));
 
-                /*
-                // i have to see if the image is encrypted , if yes then it will be displayed encrypted and needed the right password to be decrypted
-                int idImageToTransform = imageDAO.getImageIdByPath(imagesList.get(currentIndex));
-
-                if(transformationDAO.getTransformations(idImageToTransform).contains("ENCRYPT")){
-                    byte[] seed = HashPassword.sha256("khaled");
-                    Image img_encrypted = ImageEncryptor.encrypt(myImageView.getImage(),seed);
-                    controller.setImage(img_encrypted);
-                    controller.setImagePath(imagesList.get(currentIndex));
-                }else{
-                    controller.setImage(myImageView.getImage());
-                    controller.setImagePath(imagesList.get(currentIndex));
-                }
-                 */
                 Stage stage = (Stage) myImageView.getScene().getWindow();
                 stage.setScene(new Scene(root));
+                stage.setMaximized(true);
             } catch (IOException e) {
                 showAlert("Eroor", "Can't open transform panel");
             } catch (Exception e) {
@@ -380,7 +364,6 @@ public class MainController{
         String correctPassword = myPassword; // Replace with your logic
         return inputPassword.equals(correctPassword);
     }
-
 
     // function to popup a login page
     private void enterPasswordAlert(){        // Create a dialog window
@@ -444,7 +427,6 @@ public class MainController{
         });
 
     }
-
 
 }
 

@@ -25,15 +25,14 @@ public class TransformController {
 
     private Image originalImage;
     private String currentImagePath;
-    // private final MetaDataManager metadataManager = new MetaDataManager();
     private final ImageDAO imageDAO = new ImageDAO();
     private final TransformationDAO transformationDAO = new TransformationDAO();
     private String currentActiveFilter;
     private String seed_StringEncrypt = null;
     private String seed_StringDecrypt=null;
-
-
     @FXML private ImageView myImageView;
+
+
 
     // Initialisation , used in MainController
     public void setImage(Image image) {
@@ -41,15 +40,10 @@ public class TransformController {
         myImageView.setImage(image);
         currentActiveFilter = null; //take off the current Active filters
     }
-    // method to save transformations
-    @FXML
-    private void saveTransformations(){}
-
     // used in MainController , to set the apth of the originalImage while opening
     public void setImagePath(String path) {
         this.currentImagePath = path;
     }
-
     // Navigation
     @FXML
     private void goBackMainView() {
@@ -62,11 +56,11 @@ public class TransformController {
 
             Stage stage = (Stage) myImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
+            //stage.setMaximized(true);
         } catch (IOException e) {
             showAlert("Error", "Can't go back to the MainView");
         }
     }
-
     //Filters classes Created and use applyFilter method
     @FXML
     private void onMirrorClicked() {
@@ -92,10 +86,13 @@ public class TransformController {
     private void rotateRight(){
         applyFilter(new RotateRightFilter(), "RotateRight");
     }
-
     @FXML
     private void rotateLeft(){
         applyFilter(new RotateLeftFilter(), "RotateLeft");
+    }
+    @FXML
+    private void saveTransformations(){
+        showConfirmation("Saving Transformations...", "Transformation Saved");
     }
 
     // method used in the FilterButton{to ensure No duplication in the Filters before applying}
@@ -119,9 +116,9 @@ public class TransformController {
             throw new RuntimeException(e);
         }
 
-        // Nouvelle implémentation corrigée
+        //rotation added
         if(filterName.equals("RotateRight") || filterName.equals("RotateLeft")){
-            // Pour les rotations : appliquer sur l'image actuelle (permet des rotations multiples)
+            // for the rotatin , the image displayed {to be able to flip it plultiple time
             Image result_img = filter.apply(myImageView.getImage());
             myImageView.setImage(result_img);
 
@@ -133,10 +130,9 @@ public class TransformController {
                 }
             }
         } else {
-            // Pour les autres filtres : toujours utiliser l'original
+            // for other filters we use the original one
             Image result_img = filter.apply(originalImage);
             myImageView.setImage(result_img);
-
             if (!isAlreadyApplied) {
                 try {
                     transformationDAO.addTransformation(imageId, filterName);
@@ -147,9 +143,7 @@ public class TransformController {
         }
     }
 
-
-
-    // method to display error message  on alert window
+    // method to display error message  on alert window used in save
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -157,7 +151,15 @@ public class TransformController {
         alert.showAndWait();
     }
 
+    private void showConfirmation(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
 
+    }
+
+    // security part
     @FXML
     private void encryptImage(){
         try{
@@ -190,8 +192,6 @@ public class TransformController {
             throw new RuntimeException(e);
         }
     }
-
-
     @FXML
     private void decryptImage(){
         try{
@@ -222,9 +222,6 @@ public class TransformController {
 
 
     }
-
-
-
     // function to popup when encrypting picture
     private void enterPasswordEncryptAlert(){        // Create a dialog window
         Dialog<String> dialog = new Dialog<>();
@@ -275,7 +272,6 @@ public class TransformController {
         );
 
     }
-
     // method to popup when decrypting picture
     private void enterPasswordDecryptAlert(){
         Dialog<String> dialog = new Dialog<>();

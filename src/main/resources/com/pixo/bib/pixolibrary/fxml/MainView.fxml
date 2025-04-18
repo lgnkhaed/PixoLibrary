@@ -8,28 +8,28 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane fx:id="mainPane" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../CSS/mainStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.MainController">
+<Pane fx:id="mainPane" prefHeight="568.0" prefWidth="902.0" stylesheets="@../CSS/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.MainController">
     <children>
-        <ImageView fx:id="myImageView" fitHeight="488.0" fitWidth="800.0" layoutX="150.0" layoutY="68.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="myImageView" fitHeight="350.0" fitWidth="491.0" layoutX="27.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true" />
 
         <!-- Boutons existants -->
-        <Button fx:id="changeImageButton" layoutX="552.0" layoutY="567.0" onAction="#handleNextImage" prefHeight="35.0" prefWidth="120.0" text="Other Image" />
-        <Button fx:id="myUploadButton" layoutX="787.0" layoutY="571.0" onAction="#uploadPicture" prefHeight="35.0" prefWidth="120.0" text="Click To Upload" />
-        <Button fx:id="myTransformButton" layoutX="249.0" layoutY="561.0" onAction="#openTransformationPanel" prefHeight="35.0" prefWidth="120.0" text="Transform" />
+        <Button fx:id="changeImageButton" layoutX="189.0" layoutY="493.0" onAction="#handleNextImage" prefHeight="35.0" prefWidth="120.0" text="Other Image" />
+        <Button fx:id="myUploadButton" layoutX="321.0" layoutY="493.0" onAction="#uploadPicture" prefHeight="35.0" prefWidth="120.0" text="Click To Upload" />
+        <Button fx:id="myTransformButton" layoutX="56.0" layoutY="493.0" onAction="#openTransformationPanel" prefHeight="35.0" prefWidth="120.0" text="Transform" />
 
         <!-- Recherche par tags -->
-        <TextField fx:id="searchTagField" layoutX="384.0" layoutY="19.0" prefHeight="38.0" prefWidth="419.0" promptText="Rechercher par tag ou filtre (ex: Nature, Sepia)..." />
-        <Button layoutX="879.0" layoutY="16.0" onAction="#handleSearchByTag" prefHeight="38.0" prefWidth="120.0" text="Rechercher" />
+        <TextField fx:id="searchTagField" layoutX="38.0" layoutY="50.0" prefHeight="38.0" prefWidth="318.0" promptText="Rechercher par tag ou filtre (ex: Nature, Sepia)..." />
+        <Button layoutX="368.0" layoutY="50.0" onAction="#handleSearchByTag" prefHeight="38.0" prefWidth="120.0" text="Rechercher" />
 
         <!-- Tags management -->
-        <TextField fx:id="tagInput" layoutX="1034.0" layoutY="344.0" prefHeight="35.0" prefWidth="200.0" promptText="Enter tag..." />
-        <Button layoutX="1029.0" layoutY="402.0" onAction="#handleAddTag" prefHeight="35.0" prefWidth="200.0" text="Add" />
-        <Button layoutX="1031.0" layoutY="455.0" onAction="#handleRemoveTag" prefHeight="35.0" prefWidth="200.0" text="Remove" />
-        <ListView fx:id="tagsListView" layoutX="1034.0" layoutY="155.0" prefHeight="150.0" prefWidth="200.0" />
-      <Button fx:id="loginButton" layoutX="1010.0" layoutY="640.0" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="120.0" text="LoginButton" />
-      <Text fx:id="messageDisplay" fill="WHITE" layoutX="480.0" layoutY="661.0" strokeMiterLimit="20.0" strokeType="OUTSIDE" strokeWidth="20.0" text="Welcome To Pixo!!!  Log in and start the visual exprience" textAlignment="CENTER" wrappingWidth="343.71759033203125">
-         <font>
-            <Font name="Bookman Old Style Bold" size="24.0" />
-         </font></Text>
+        <TextField fx:id="tagInput" layoutX="587.0" layoutY="231.0" prefHeight="35.0" prefWidth="200.0" promptText="Enter tag..." />
+        <Button layoutX="687.0" layoutY="285.0" onAction="#handleAddTag" prefHeight="35.0" prefWidth="99.0" text="Add" />
+        <Button layoutX="587.0" layoutY="286.0" onAction="#handleRemoveTag" prefHeight="35.0" prefWidth="92.0" text="Remove" />
+        <ListView fx:id="tagsListView" layoutX="587.0" layoutY="337.0" prefHeight="150.0" prefWidth="200.0" />
+        <Button fx:id="loginButton" layoutX="627.0" layoutY="142.0" mnemonicParsing="false" onAction="#login" prefHeight="50.0" prefWidth="120.0" text="LoginButton" />
+        <Text fx:id="messageDisplay" fill="WHITE" layoutX="532.0" layoutY="49.0" strokeMiterLimit="20.0" strokeType="OUTSIDE" strokeWidth="20.0" text="Welcome To Pixo!!!  Log in and start the visual exprience" textAlignment="CENTER" wrappingWidth="343.71759033203125">
+            <font>
+                <Font name="Bookman Old Style Bold" size="24.0" />
+            </font></Text>
     </children>
 </Pane>

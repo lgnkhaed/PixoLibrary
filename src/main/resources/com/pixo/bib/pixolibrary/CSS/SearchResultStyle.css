@@ -1,0 +1,44 @@
+
+#mainPane {
+    -fx-background-color: linear-gradient(to bottom right, #000000, #1a1a1a);
+    -fx-padding: 20;
+}
+
+
+#currentImageView {
+    -fx-effect: dropshadow(gaussian, black, 15, 0.6, 0, 0);
+    -fx-border-radius: 10;
+    -fx-border-color: #444444;
+    -fx-border-width: 2;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to bottom, #222222, #111111);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #555555;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 6, 0.4, 0, 2);
+    -fx-font-size: 12px;
+    -fx-padding: 6 12 6 12;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #333333, #1c1c1c);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.button:pressed {
+    -fx-background-color: #000000;
+    -fx-text-fill: #dddddd;
+}
+
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}

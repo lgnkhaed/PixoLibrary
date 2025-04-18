@@ -18,29 +18,31 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SearchResultsController {
 
     @FXML private ImageView currentImageView;
     @FXML private Label pageLabel;
     @FXML private Label imageInfoLabel;
-    @FXML private VBox metadataContainer;
 
     private List<String> imagePaths;
     private int currentIndex = 0;
+    private List<Image> images;
 
-    // Remplacement de MetaDataManager par les DAOs
+    //data Access class
     private ImageDAO imageDAO;
     private TagDAO tagDAO;
     private TransformationDAO transformationDAO;
 
-    public void initializeData(List<String> imagePaths, ImageDAO imageDAO,
-                               TagDAO tagDAO, TransformationDAO transformationDAO) {
+    public void initializeData(List<String> imagePaths, ImageDAO imageDAO, TagDAO tagDAO, TransformationDAO transformationDAO) {
         this.imagePaths = imagePaths;
         this.imageDAO = imageDAO;
         this.tagDAO = tagDAO;
         this.transformationDAO = transformationDAO;
+        this.images = uploadingImagesToBeDisplayed(imagePaths);
 
         if (imagePaths == null || imagePaths.isEmpty()) {
             showNoResults();
@@ -49,68 +51,69 @@ public class SearchResultsController {
         }
     }
 
-    private void showCurrentImage() {
-        try {
-            String currentPath = imagePaths.get(currentIndex);
-            Image originalImage = new Image(new File(currentPath).toURI().toString());
-            currentImageView.setImage(applySavedFilters(currentPath, originalImage));
-            updatePageInfo();
-            displayMetadata(currentPath);
-            clearError();
-        } catch (Exception e) {
-            showError("Erreur de chargement de l'image: " + e.getMessage());
-            e.printStackTrace();
-        }
+    private List<Image> uploadingImagesToBeDisplayed(List<String> imagesPaths){
+           List<Image> allImagesToBeDisplayed = new ArrayList<>();
+           for(String path : imagesPaths){
+               Image img = new Image(new File(path).toURI().toString());
+               List<Image> imgForOnePath = applySavedFilters(path,img);
+               allImagesToBeDisplayed.addAll(imgForOnePath);
+           }
+           return allImagesToBeDisplayed;
     }
 
-    private Image applySavedFilters(String imagePath, Image originalImage) {
+    private List<Image> applySavedFilters(String imagePath, Image originalImage) {
+
+        List<Image> imagesToBeRetuned = new ArrayList<Image>();
+        imagesToBeRetuned.add(originalImage);
+
         try {
             int imageId = imageDAO.getImageIdByPath(imagePath);
             List<String> transformations = transformationDAO.getTransformations(imageId);
 
-            Image processedImage = originalImage;
             for (String filterName : transformations) {
                 switch (filterName) {
                     case "Sepia":
-                        processedImage = new SepiaFilter().apply(processedImage);
+                        imagesToBeRetuned.add(new SepiaFilter().apply(originalImage));
                         break;
-                    // ... autres cas identiques ...
+                    case "Sobel":
+                        imagesToBeRetuned.add(new SobelFilter().apply(originalImage));
+                        break;
+                    case "RGBSwap":
+                        imagesToBeRetuned.add(new RGBSwapFilter().apply(originalImage));
+                        break;
+                    case "BlackWhite":
+                        imagesToBeRetuned.add(new GrayscaleFilter().apply(originalImage));
+                        break;
+                    case "Mirror":
+                        imagesToBeRetuned.add(new FlipHorizontalFilter().apply(originalImage));
+                        break;
+                    case "RotateRight":
+                        imagesToBeRetuned.add(new RotateRightFilter().apply(originalImage));
+                        break;
+                    case "RotateLeft":
+                        imagesToBeRetuned.add(new RotateLeftFilter().apply(originalImage));
+                        break;
                 }
             }
-            return processedImage;
         } catch (SQLException e) {
             showError("Erreur de chargement des filtres");
-            return originalImage;
         }
+        return imagesToBeRetuned;
     }
 
-    private void displayMetadata(String imagePath) {
-        metadataContainer.getChildren().clear();
-
+    private void showCurrentImage() {
         try {
-            int imageId = imageDAO.getImageIdByPath(imagePath);
-
-            // Récupération des tags avec TagDAO
-            List<String> tags = tagDAO.getTags(imageId);
-            if (!tags.isEmpty()) {
-                Label tagsLabel = new Label("Tags: " + String.join(", ", tags));
-                metadataContainer.getChildren().add(tagsLabel);
-            }
-
-            // Récupération des transformations avec TransformationDAO
-            List<String> transformations = transformationDAO.getTransformations(imageId);
-            if (!transformations.isEmpty()) {
-                Label filtersLabel = new Label("Filtres: " + String.join(", ", transformations));
-                metadataContainer.getChildren().add(filtersLabel);
-            }
-
-        } catch (SQLException e) {
-            showError("Erreur de chargement des métadonnées");
+            currentImageView.setImage(this.images.get(currentIndex));
+            updatePageInfo();
+            clearError();
+        } catch (Exception e) {
+            showError("Erreur de chargement de l'image: " + e.getMessage());
         }
     }
+
 
     private void updatePageInfo() {
-        pageLabel.setText(String.format("Image %d/%d", currentIndex + 1, imagePaths.size()));
+        pageLabel.setText(String.format("Image %d/%d", currentIndex + 1, images.size()));
     }
 
     private void showNoResults() {
@@ -141,7 +144,7 @@ public class SearchResultsController {
 
     @FXML
     private void nextPage() {
-        if (currentIndex < imagePaths.size() - 1) {
+        if (currentIndex < images.size() - 1) {
             currentIndex++;
             showCurrentImage();
         }
@@ -158,6 +161,7 @@ public class SearchResultsController {
 
             Stage stage = (Stage) currentImageView.getScene().getWindow();
             stage.setScene(new Scene(root));
+            //stage.setMaximized(true);
         } catch (IOException e) {
             showAlert("Error", "Can't go back to the MainView");
         }

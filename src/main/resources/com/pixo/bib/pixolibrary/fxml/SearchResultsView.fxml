@@ -3,29 +3,26 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.SearchResultsController">
+<Pane fx:id="mainPane" prefHeight="568.0" prefWidth="902.0" stylesheets="@../CSS/SearchResultStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pixo.bib.pixolibrary.Controllers.SearchResultsController">
+    <children>
 
-    <center>
-        <StackPane>
-            <ImageView fx:id="currentImageView" fitHeight="500.0" fitWidth="602.0" preserveRatio="true" />
-        </StackPane>
-    </center>
+        <ImageView fx:id="currentImageView" fitHeight="350.0" fitWidth="491.0" layoutX="206.0" layoutY="77.0" preserveRatio="true" />
 
-    <bottom>
-        <VBox alignment="CENTER" spacing="10">
-            <HBox alignment="CENTER" spacing="20">
-            <Button fx:id="returnButton" mnemonicParsing="false" onAction="#goBackToMain" text="return" />
-                <Button onAction="#previousPage" text="◀ Previous" />
-                <Label fx:id="pageLabel" text="Page 1/1" />
-                <Button onAction="#nextPage" text="Next ▶" />
-            </HBox>
-            <Label fx:id="imageInfoLabel" />
-            <VBox fx:id="metadataContainer" spacing="5" />
-        </VBox>
-    </bottom>
-</BorderPane>
+
+        <Button fx:id="returnButton" layoutX="21.0" layoutY="14.0" onAction="#goBackToMain" prefHeight="25.0" prefWidth="65.0" text="Return" />
+        <Button layoutX="267.0" layoutY="440.0" onAction="#previousPage" prefHeight="35.0" prefWidth="120.0" text="◀ Previous" />
+        <Label fx:id="pageLabel" contentDisplay="CENTER" layoutX="414.0" layoutY="445.0" prefHeight="25.0" prefWidth="75.0" text="Page 1/1">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <Button layoutX="514.0" layoutY="440.0" onAction="#nextPage" prefHeight="35.0" prefWidth="120.0" text="Next ▶" />
+
+        <Label fx:id="imageInfoLabel" layoutX="348.0" layoutY="500.0" prefHeight="17.0" prefWidth="207.0" textAlignment="CENTER" wrapText="true" />
+
+
+    </children>
+</Pane>
